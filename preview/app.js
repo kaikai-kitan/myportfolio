@@ -19,6 +19,13 @@
     return key && owns(data.audiences, key) ? key : defaultKey;
   };
   let audienceKey = readKey();
+  let featuredOverride = new URLSearchParams(location.search).get('featured');
+  const audienceProjectIds = () => validIds([data.audiences[audienceKey].featuredProject, ...(data.audiences[audienceKey].galleryOrder || [])], data.projects);
+  const selectedFeatured = () => {
+    const ids = audienceProjectIds();
+    return ids.includes(featuredOverride) ? featuredOverride : ids[0];
+  };
+  const resolveProject = id => ({ ...data.projects[id], ...(data.audiences[audienceKey].projectOverrides?.[id] || {}) });
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let skillObserver;
 
@@ -41,7 +48,7 @@
     const processImages = images.length
       ? images.map(item => `<figure><img src="${escape(safeURL(item.src))}" alt="${escape(item.alt || '')}" loading="lazy"><figcaption>${escape(item.caption || '')}</figcaption></figure>`).join('')
       : '<div class="process-placeholder">設計図・スケッチを追加</div><div class="process-placeholder">試作品・検証時の写真を追加</div>';
-    return `<article class="project ${index % 2 ? 'reverse' : ''}" aria-labelledby="project-title-${index}"><div class="wrap"><div class="project-layout"><figure class="project-figure">${artwork}<figcaption>${escape(project.imageCaption || '作品画像')}</figcaption></figure><div class="project-copy"><p class="project-kicker"><span class="project-number">${String(index + 1).padStart(2,'0')}</span>${escape(project.category)}</p><h3 id="project-title-${index}">${escape(project.title)}</h3><p class="project-summary">${missing(project.summary, '概要を記入予定：何を、誰のためにつくったかを説明します。')}</p><dl class="project-meta">${meta.map(([label,value]) => `<div><dt>${label}</dt><dd>${missing(value)}</dd></div>`).join('')}</dl>${safeURL(project.link) ? `<a class="project-source" href="${escape(safeURL(project.link))}" target="_blank" rel="noopener noreferrer">${escape(project.linkLabel || '関連リンク')} ↗</a>` : ''}</div></div><details class="project-details"><summary>${escape(project.title)}：制作過程・補足資料を読む</summary><div class="detail-body">${detailRows.map(([label,value,hint]) => `<div class="detail-row"><h4>${label}</h4><p>${missing(value, hint)}</p></div>`).join('')}<div class="process-images">${processImages}</div></div></details></div></article>${storyMarkup(project, index)}`;
+    return `<article class="project ${index % 2 ? 'reverse' : ''}" aria-labelledby="project-title-${index}"><div class="wrap"><div class="project-layout"><figure class="project-figure">${artwork}<figcaption>${escape(project.imageCaption || '作品画像')}</figcaption></figure><div class="project-copy"><p class="project-kicker"><span class="project-number">${typeof index === 'number' ? String(index + 1).padStart(2,'0') : 'DETAIL'}</span>${escape(project.category)}</p><h3 id="project-title-${index}">${escape(project.title)}</h3><p class="project-summary">${missing(project.summary, '概要を記入予定：何を、誰のためにつくったかを説明します。')}</p><dl class="project-meta">${meta.map(([label,value]) => `<div><dt>${label}</dt><dd>${missing(value)}</dd></div>`).join('')}</dl>${safeURL(project.link) ? `<a class="project-source" href="${escape(safeURL(project.link))}" target="_blank" rel="noopener noreferrer">${escape(project.linkLabel || '関連リンク')} ↗</a>` : ''}</div></div><details class="project-details"><summary>${escape(project.title)}：制作過程・補足資料を読む</summary><div class="detail-body">${detailRows.map(([label,value,hint]) => `<div class="detail-row"><h4>${label}</h4><p>${missing(value, hint)}</p></div>`).join('')}<div class="process-images">${processImages}</div></div></details></div></article>${storyMarkup(project, index)}`;
   }
   function storyMarkup(project, index) {
     const story = project.behindScenes;
@@ -88,21 +95,56 @@
       ['関心領域', audience.interests || data.person.interests]
     ];
     $('#profile-facts').innerHTML = facts.map(([label,value]) => `<div><dt>${label}</dt><dd>${missing(value,'研究テーマを記入予定')}</dd></div>`).join('');
-    $('#projects').innerHTML = validIds(audience.projectOrder, data.projects).map((id, index) => {
-      const project = { ...data.projects[id], ...(audience.projectOverrides?.[id] || {}) };
-      return projectMarkup(project, index);
-    }).join('');
+    const featuredId = selectedFeatured();
+    const availableIds = audienceProjectIds();
+    $('#projects').innerHTML = featuredId ? projectMarkup(resolveProject(featuredId), 0) : '<p class="wrap empty-gallery">メイン実績を設定してください。</p>';
+    const galleryIds = availableIds.filter(id => id !== featuredId);
+    $('#gallery-grid').innerHTML = galleryIds.length ? galleryIds.map(id => galleryMarkup(resolveProject(id), id)).join('') : '<p class="empty-gallery">その他の実績は準備中です。</p>';
+    $('#featured-select').innerHTML = availableIds.map(id => `<option value="${escape(id)}">${escape(resolveProject(id).title)}</option>`).join('');
+    $('#featured-select').value = featuredId || '';
     renderSkills(audience);
     if (updateURL) {
       const url = new URL(location.href); url.searchParams.set('for',audienceKey);
+      if (featuredOverride && availableIds.includes(featuredOverride)) url.searchParams.set('featured',featuredOverride); else url.searchParams.delete('featured');
       history.replaceState(null,'',url);
     }
     $('#audience-select').value = audienceKey;
     const viewer = new URL(location.href);
     viewer.searchParams.set('for',audienceKey); viewer.searchParams.delete('edit'); viewer.hash = '';
+    if (featuredOverride && availableIds.includes(featuredOverride)) viewer.searchParams.set('featured',featuredOverride); else viewer.searchParams.delete('featured');
     $('#view-link').href = viewer.href;
-    scheduleScroll();
   }
+
+  function galleryMarkup(project, id) {
+    const image = safeURL(project.image);
+    const visual = image
+      ? `<img class="project-image" src="${escape(image)}" alt="${escape(project.imageAlt || project.title)}" loading="lazy">`
+      : `<div class="project-placeholder">${imageIcon}<p>${escape(project.imageCaption || '作品画像')}</p></div>`;
+    return `<article class="gallery-card">${visual}<div class="gallery-copy"><p class="gallery-category">${escape(project.category)}</p><h3>${escape(project.title)}</h3><p>${missing(project.summary,'作品・活動の概要を記入予定です。')}</p><button class="gallery-open" type="button" data-gallery-project="${escape(id)}" aria-label="${escape(project.title)}の詳細を見る">詳しく見る <span aria-hidden="true">↗</span></button></div></article>`;
+  }
+  function renderHobbies() {
+    $('#hobbies-grid').innerHTML = (data.hobbies || []).map(hobby => `<article class="hobby-card">${safeURL(hobby.image) ? `<img class="hobby-image" src="${escape(safeURL(hobby.image))}" alt="${escape(hobby.imageAlt || hobby.title)}" loading="lazy">` : `<div class="hobby-placeholder">${imageIcon}<span>趣味の写真</span></div>`}<div><h3>${escape(hobby.title)}</h3><p>${missing(hobby.description,'好きなこと・普段の活動について記入予定です。')}</p></div></article>`).join('') || '<p class="empty-gallery">趣味の紹介は準備中です。</p>';
+  }
+  const galleryDialog = $('#gallery-dialog');
+  let galleryTrigger;
+  $('#gallery-grid').addEventListener('click', event => {
+    const trigger = event.target.closest('[data-gallery-project]');
+    if (!trigger || galleryDialog.open || !audienceProjectIds().includes(trigger.dataset.galleryProject)) return;
+    galleryTrigger = trigger;
+    $('#gallery-detail').innerHTML = projectMarkup(resolveProject(trigger.dataset.galleryProject), 'detail');
+    galleryDialog.showModal(); galleryDialog.scrollTop = 0;
+    document.body.classList.add('dialog-open'); $('#close-gallery').focus();
+  });
+  $('#close-gallery').addEventListener('click', () => galleryDialog.close());
+  galleryDialog.addEventListener('click', event => {
+    if (event.target !== galleryDialog) return;
+    const rect = galleryDialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) galleryDialog.close();
+  });
+  galleryDialog.addEventListener('close', () => {
+    document.body.classList.remove('dialog-open');
+    if (galleryTrigger?.isConnected) galleryTrigger.focus({preventScroll:true});
+  });
 
   function renderChapters() {
     $('#chapters').innerHTML = data.chapters.map((chapter,index) => `<article class="chapter"><div class="chapter-photo">${safeURL(chapter.image) ? `<img src="${escape(safeURL(chapter.image))}" alt="${escape(chapter.alt || chapter.caption)}" loading="lazy">` : `<div class="chapter-placeholder">${imageIcon}<span>PHOTO ${String(index+1).padStart(2,'0')}</span></div>`}</div><span class="chapter-number">${String(index+1).padStart(2,'0')}</span><div class="chapter-content"><p class="chapter-label">${escape(chapter.label)}</p><h3>${escape(chapter.title)}</h3><p class="chapter-caption">${escape(chapter.caption)}</p><button class="chapter-toggle" type="button" aria-expanded="false" aria-controls="chapter-detail-${index}">${escape(chapter.label)}の詳細 <span aria-hidden="true">＋</span></button><div class="chapter-detail" id="chapter-detail-${index}" tabindex="0" hidden>${escape(chapter.detail || '写真にまつわる活動内容・自分の役割・具体的なエピソードを記入予定です。')}</div></div></article>`).join('');
@@ -155,35 +197,56 @@
     $('#editor-indicator').textContent = open ? '−' : '＋';
   });
   $('#audience-select').addEventListener('change', event => {
-    audienceKey = event.target.value; renderAudience(true);
+    audienceKey = event.target.value; featuredOverride = null; renderAudience(true);
     $('#editor-status').textContent = `${data.audiences[audienceKey].label}の構成に変更しました。`;
+  });
+  $('#featured-select').addEventListener('change', event => {
+    featuredOverride = event.target.value; renderAudience(true);
+    $('#editor-status').textContent = `${resolveProject(selectedFeatured()).title}をメイン実績に設定しました。`;
   });
   $('#copy-link').addEventListener('click', async () => {
     try { await navigator.clipboard.writeText($('#view-link').href); $('#editor-status').textContent = '閲覧用URLをコピーしました。'; }
     catch { $('#editor-status').textContent = `「閲覧用表示」のリンクをご利用ください：${$('#view-link').href}`; }
   });
-  window.addEventListener('popstate', () => { const next = readKey(); if (next !== audienceKey) { audienceKey = next; renderAudience(); } });
-  let framePending = false;
-  function updateScroll() {
-    framePending = false;
-    const entrance = $('.entrance');
-    const rect = entrance.getBoundingClientRect();
-    const distance = Math.max(1,entrance.offsetHeight - $('.entrance-stage').offsetHeight);
-    const amount = Math.max(0,Math.min(1,-rect.top/distance));
-    $('#curtain').style.setProperty('--curtain-y',`${-105 * amount}%`);
-    $('.welcome-name').style.opacity = String(Math.max(0, Math.min(1, (amount - .12) / .25)));
-    // 見えなくなった入口のリンクがTab移動で選択されないようにする。
-    $('#curtain').inert = !reduced.matches && amount >= .99;
-    $('.welcome-scene').inert = reduced.matches || amount < .45;
+  window.addEventListener('popstate', () => {
+    const next = readKey();
+    const nextFeatured = new URLSearchParams(location.search).get('featured');
+    if (next !== audienceKey || nextFeatured !== featuredOverride) {
+      audienceKey = next; featuredOverride = nextFeatured; renderAudience();
+    }
+  });
+
+  // 暖簾は最初のクリックだけで開く。スクロール量には連動させない。
+  let entered = false;
+  let curtainTimer;
+  const curtain = $('#curtain');
+  const openButton = $('#open-curtain');
+  $('.welcome-scene').inert = true;
+  function finishEntrance() {
+    clearTimeout(curtainTimer);
+    curtain.hidden = true;
+    $('.welcome-scene').inert = false;
+    // 開いている間に別セクションへ進んだ場合、フォーカスを入口へ戻さない。
+    if ($('.entrance').getBoundingClientRect().bottom > innerHeight * .4) $('#welcome-next').focus({preventScroll:true});
   }
-  function scheduleScroll() { if (!framePending) { framePending = true; requestAnimationFrame(updateScroll); } }
-  window.addEventListener('scroll',scheduleScroll,{passive:true});
-  window.addEventListener('resize',scheduleScroll);
-  window.addEventListener('load',scheduleScroll);
+  function enter() {
+    if (entered) return;
+    entered = true;
+    openButton.disabled = true;
+    $('.entrance').classList.add('is-entered');
+    curtain.classList.add('is-opening');
+    curtain.inert = true;
+    if (reduced.matches) finishEntrance();
+    else curtainTimer = setTimeout(finishEntrance, 1150);
+  }
+  openButton.addEventListener('click',enter);
   reduced.addEventListener('change', () => {
-    if (reduced.matches) { skillObserver?.disconnect(); all('.skill-plaque').forEach(plaque => plaque.classList.remove('waiting')); }
-    scheduleScroll();
+    if (reduced.matches) {
+      skillObserver?.disconnect(); all('.skill-plaque').forEach(plaque => plaque.classList.remove('waiting'));
+      if (entered && !curtain.hidden) finishEntrance();
+    }
   });
   renderChapters();
+  renderHobbies();
   renderAudience();
 })();

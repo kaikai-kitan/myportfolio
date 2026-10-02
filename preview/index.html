@@ -8,9 +8,9 @@
   <meta name="theme-color" content="#762e33">
   <title>岩田 快道 | ポートフォリオ</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=noren-1">
-  <script src="portfolio-data.js?v=noren-1" defer></script>
-  <script src="app.js?v=noren-1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=noren-click-1">
+  <script src="portfolio-data.js?v=noren-click-1" defer></script>
+  <script src="app.js?v=noren-click-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#about">自己紹介へ移動</a>
@@ -19,17 +19,17 @@
       <div class="welcome-scene">
         <img id="welcome-image" src="assets/taisho-placeholder.svg" alt="両手を広げた人物の写真プレースホルダー">
         <span class="welcome-photo-note" id="welcome-photo-note">写真プレースホルダー / 大将ポーズ</span>
-        <div class="welcome-name"><p>プロフィール</p><h2 id="welcome-name">岩田 快道</h2><p id="welcome-affiliation">京都産業大学大学院 先端情報学研究科</p><a href="#about">自己紹介へ ↓</a></div>
+        <div class="welcome-name"><p>プロフィール</p><h2 id="welcome-name">岩田 快道</h2><p id="welcome-affiliation">京都産業大学大学院 先端情報学研究科</p><a href="#about" id="welcome-next">下にスクロールして自己紹介へ ↓</a></div>
       </div>
       <div class="curtain" id="curtain">
         <div class="curtain-panels" aria-hidden="true"><div></div><div></div><div></div><div></div></div>
         <div class="curtain-top"><span>岩田 快道 <small>就職活動用ポートフォリオ</small></span><a href="#about">内容へ進む <span aria-hidden="true">↗</span></a></div>
         <div class="curtain-title"><span class="entrance-mark" aria-hidden="true">屋台</span><h1 id="entrance-title"><span>夜を行く！</span><span>屋台人！</span></h1></div>
-        <a class="scroll-enter" href="#about"><span>スクロールして入店</span><small>Scroll Down</small><span class="scroll-arrow" aria-hidden="true">↓</span></a>
+        <button class="curtain-open" id="open-curtain" type="button" aria-label="暖簾をめくって入店"><span class="scroll-enter"><span>クリックして暖簾をめくる</span><small>Click / Tap to enter</small><span class="open-mark" aria-hidden="true">↗</span></span></button>
       </div>
     </div>
   </section>
-  <nav class="site-nav" aria-label="セクションナビゲーション"><div class="wrap nav-inner"><a class="nav-brand" href="#top">岩田 快道<span>PORTFOLIO</span></a><div class="nav-links"><a href="#about">自己紹介</a><a href="#skills">スキル</a><a href="#works">実績・プロジェクト</a><a href="#contact">お問い合わせ</a></div></div></nav>
+  <nav class="site-nav" aria-label="セクションナビゲーション"><div class="wrap nav-inner"><a class="nav-brand" href="#top">岩田 快道<span>PORTFOLIO</span></a><div class="nav-links"><a href="#about">自己紹介</a><a href="#skills">スキル</a><a href="#works">メイン実績</a><a href="#gallery">その他の実績</a><a href="#hobbies">趣味</a><a href="#contact">お問い合わせ</a></div></div></nav>
   <main>
     <section class="about-section" id="about" aria-labelledby="about-title">
       <div class="wrap">
@@ -44,10 +44,13 @@
       <p class="template-help" id="skills-note">熟達度と使用例は、内容の共有後に設定します。</p>
       <div class="skill-board" id="skill-board"></div>
     </div></section>
-    <section class="works-section" id="works" aria-labelledby="works-title"><div class="wrap"><div class="section-heading"><div><span class="section-index">03 / PROJECTS</span><h2 id="works-title">実績・プロジェクト</h2><p class="section-subtitle">お品書き＆裏メニュー</p></div><p class="section-description">概要・担当範囲・使用技術・成果を記載。<br>制作の過程や課題への対応も紹介します。</p></div><p class="template-help" id="works-note">未確認の実績・数値・エピソードは記入待ちです。</p></div><div id="projects"></div></section>
+    <section class="works-section" id="works" aria-labelledby="works-title"><div class="wrap"><div class="section-heading"><div><span class="section-index">03 / FEATURED PROJECT</span><h2 id="works-title">メイン実績</h2><p class="section-subtitle">お品書き＆裏メニュー</p></div><p class="section-description">概要・担当範囲・使用技術・成果と、<br>制作の過程を詳しく紹介します。</p></div><p class="template-help" id="works-note">未確認の実績・数値・エピソードは記入待ちです。</p></div><div id="projects"></div></section>
+    <section class="gallery-section" id="gallery" aria-labelledby="gallery-title"><div class="wrap"><div class="section-heading"><div><span class="section-index">04 / PROJECT GALLERY</span><h2 id="gallery-title">その他の実績</h2><p class="section-subtitle">制作・活動のギャラリー</p></div><p class="section-description">各作品から詳しい内容をご覧いただけます。</p></div><div class="gallery-grid" id="gallery-grid"></div></div></section>
+    <section class="hobbies-section" id="hobbies" aria-labelledby="hobbies-title"><div class="wrap"><div class="section-heading"><div><span class="section-index">05 / HOBBIES</span><h2 id="hobbies-title">趣味</h2></div></div><div class="hobbies-grid" id="hobbies-grid"></div></div></section>
   </main>
-  <footer class="contact-section" id="contact" aria-labelledby="contact-title"><div class="wrap"><div class="section-heading"><div><span class="section-index">04 / CONTACT</span><h2 id="contact-title">お問い合わせ</h2><p class="section-subtitle">お勘定</p></div></div><div class="contact-grid"><div><p class="thanks">本日はご来店ありがとうございました。</p><p class="contact-description">制作・活動についてのご連絡はこちらへ。</p><dl class="contact-list"><div><dt>メール</dt><dd><a id="contact-email" href="mailto:i2686019@cc.kyoto-su.ac.jp">i2686019@cc.kyoto-su.ac.jp</a></dd></div><div><dt>GitHub</dt><dd><a id="github-link" href="https://github.com/kaikai-kitan" target="_blank" rel="noopener noreferrer">kaikai-kitan ↗</a></dd></div></dl></div><div class="receipt"><div class="receipt-top"><span>RESUME</span><span>領収書</span></div><p>岩田 快道</p><div class="receipt-rule"></div><span class="receipt-label">経歴・スキル・制作実績</span><div id="resume-action"><button type="button" disabled>PDF版レジュメ <small>準備中</small></button></div><span class="receipt-bottom">THANK YOU FOR YOUR TIME.</span></div></div><div class="footer-bottom"><span>© 2026 岩田 快道</span><a href="#top">ページの先頭へ ↑</a></div></div></footer>
+  <footer class="contact-section" id="contact" aria-labelledby="contact-title"><div class="wrap"><div class="section-heading"><div><span class="section-index">06 / CONTACT</span><h2 id="contact-title">お問い合わせ</h2><p class="section-subtitle">お勘定</p></div></div><div class="contact-grid"><div><p class="thanks">本日はご来店ありがとうございました。</p><p class="contact-description">制作・活動についてのご連絡はこちらへ。</p><dl class="contact-list"><div><dt>メール</dt><dd><a id="contact-email" href="mailto:i2686019@cc.kyoto-su.ac.jp">i2686019@cc.kyoto-su.ac.jp</a></dd></div><div><dt>GitHub</dt><dd><a id="github-link" href="https://github.com/kaikai-kitan" target="_blank" rel="noopener noreferrer">kaikai-kitan ↗</a></dd></div></dl></div><div class="receipt"><div class="receipt-top"><span>RESUME</span><span>領収書</span></div><p>岩田 快道</p><div class="receipt-rule"></div><span class="receipt-label">経歴・スキル・制作実績</span><div id="resume-action"><button type="button" disabled>PDF版レジュメ <small>準備中</small></button></div><span class="receipt-bottom">THANK YOU FOR YOUR TIME.</span></div></div><div class="footer-bottom"><span>© 2026 岩田 快道</span><a href="#top">ページの先頭へ ↑</a></div></div></footer>
+  <dialog class="gallery-dialog" id="gallery-dialog" aria-labelledby="project-title-detail"><div class="dialog-bar"><span>実績の詳細</span><button id="close-gallery" type="button" aria-label="実績の詳細を閉じる">閉じる ×</button></div><div id="gallery-detail"></div></dialog>
   <noscript><p class="noscript-note">作品とスキルの表示にはJavaScriptを有効にしてください。メール：i2686019@cc.kyoto-su.ac.jp</p></noscript>
-  <aside class="editor-panel" id="editor-panel" hidden aria-label="応募先別プレビュー"><button type="button" class="editor-toggle" id="editor-toggle" aria-expanded="false" aria-controls="editor-body">応募先別プレビュー <span aria-hidden="true" id="editor-indicator">＋</span></button><div id="editor-body" hidden><label for="audience-select">応募先に見せる構成</label><select id="audience-select"></select><p>関心領域・作品の順番・スキルの順番を切り替えます。</p><div class="editor-actions"><button type="button" id="copy-link">表示URLをコピー</button><a id="view-link" target="_blank" rel="noopener noreferrer">閲覧用表示 ↗</a></div><output id="editor-status" role="status"></output></div></aside>
+  <aside class="editor-panel" id="editor-panel" hidden aria-label="応募先別プレビュー"><button type="button" class="editor-toggle" id="editor-toggle" aria-expanded="false" aria-controls="editor-body">応募先別プレビュー <span aria-hidden="true" id="editor-indicator">＋</span></button><div id="editor-body" hidden><label for="audience-select">応募先に見せる構成</label><select id="audience-select"></select><label for="featured-select" class="featured-label">メインに表示する実績</label><select id="featured-select"></select><p>メイン実績を選ぶと、残りをギャラリーに表示します。選択内容はコピーするURLにも反映されます。</p><div class="editor-actions"><button type="button" id="copy-link">表示URLをコピー</button><a id="view-link" target="_blank" rel="noopener noreferrer">閲覧用表示 ↗</a></div><output id="editor-status" role="status"></output></div></aside>
 </body>
 </html>

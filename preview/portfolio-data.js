@@ -32,10 +32,15 @@ window.PORTFOLIO = {
     { label: '帰宅', title: '振り返り・改善', caption: '活動後の振り返り、次の試作への改善', image: '', alt: '', detail: '' }
   ],
   audiences: {
-    iot: { label: 'IoT・ものづくり', company: '', interests: 'IoT・ハードウェア / ソフトウェア開発', projectOrder: ['physical', 'web', 'yatai'], skillOrder: ['physical', 'software', 'creative'] },
-    web: { label: 'Web・アプリ開発', company: '', interests: 'Web・アプリケーション開発', projectOrder: ['web', 'physical', 'yatai'], skillOrder: ['software', 'physical', 'creative'] },
-    experience: { label: '企画・体験づくり', company: '', interests: '企画・屋台活動 / 映像制作', projectOrder: ['yatai', 'web', 'physical'], skillOrder: ['creative', 'physical', 'software'] }
+    iot: { label: 'IoT・ものづくり', company: '', interests: 'IoT・ハードウェア / ソフトウェア開発', featuredProject: 'physical', galleryOrder: ['web', 'yatai'], skillOrder: ['physical', 'software', 'creative'] },
+    web: { label: 'Web・アプリ開発', company: '', interests: 'Web・アプリケーション開発', featuredProject: 'web', galleryOrder: ['physical', 'yatai'], skillOrder: ['software', 'physical', 'creative'] },
+    experience: { label: '企画・体験づくり', company: '', interests: '企画・屋台活動 / 映像制作', featuredProject: 'yatai', galleryOrder: ['web', 'physical'], skillOrder: ['creative', 'physical', 'software'] }
   },
+  // 趣味は内容共有後に差し替えます。項目は追加・削除できます。
+  hobbies: [
+    { title: '趣味 01', description: '', image: '', imageAlt: '' },
+    { title: '趣味 02', description: '', image: '', imageAlt: '' }
+  ],
   // level: null = 未設定、1 = 学習中、2 = 制作経験あり、3 = 自力で設計・改善できる。
   // evidence は使用した作品や担当の記録。確認できる内容だけを記入します。
   skills: {
