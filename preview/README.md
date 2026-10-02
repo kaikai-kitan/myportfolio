@@ -1,97 +1,84 @@
-# Kaido Iwata — Portfolio template
+# 岩田快道 — 就職活動用ポートフォリオ
 
-IoT・ものづくりを軸にしたポートフォリオの型です。ビルドやnpmのインストールなしで動くHTML / CSS / JavaScriptで構成しています。
+確認版：https://kaikai-kitan.github.io/myportfolio/preview/?edit=1
 
-- テンプレート確認: https://kaikai-kitan.github.io/myportfolio/preview/?edit=1
-- 閲覧用の例: https://kaikai-kitan.github.io/myportfolio/preview/?for=iot
-- 従来の公開ページ: https://kaikai-kitan.github.io/myportfolio/
+## 構成
 
-現段階では `preview/` に確認版を配置しています。イラストはレイアウト用の見本です。未確認の制作期間・成果・担当範囲などは記入枠として表示します。
+1. 全画面の暖簾。「夜を行く！屋台人！」とスクロール案内。
+2. 自己紹介。氏名・所属・研究・関心領域と、仕込み／営業／笑顔／帰宅の4分割写真。
+3. スキルセット。木札と3段階のレモン表示。
+4. 実績・プロジェクト。左右交互の画像と、概要・期間・体制・担当範囲・使用技術・成果。
+5. 裏メニュー。課題・失敗 → 対応・解決 → 教訓。
+6. お問い合わせ。メール、GitHub、PDF版レジュメ。
 
-## 編集する場所
+## 内容を編集する
 
-| ファイル | 内容 |
+`portfolio-data.js` に内容をまとめています。未確認の事実や熟達度は空欄で残し、記入待ちとして表示します。
+
+| 設定 | 用途 |
 | --- | --- |
-| `portfolio-data.js` | 自己紹介、作品、スキル、応募先別の構成 |
-| `index.html` | ページの構造と検索向け設定 |
-| `styles.css` | 色・余白・書体・スマートフォン表示 |
-| `app.js` | 応募先別の表示、作品詳細、屋台の演出 |
-| `assets/` | 見本イラストと、これから追加する画像 |
-| `CONTENT-TEMPLATE.md` | 次に共有してほしい内容の記入用シート |
+| `entrance.title` | 指定された入口の見出し |
+| `entrance.curtainImage` | 暖簾の画像。空欄ならCSSの暖簾 |
+| `entrance.welcomeImage` | 両手を広げた大将ポーズの写真 |
+| `person` | 氏名・所属・研究・紹介文・連絡先 |
+| `person.resume` | PDFのパス。空欄なら「準備中」の無効なボタン |
+| `chapters` | 4場面の画像・キャプション・詳細文 |
+| `skills` | カテゴリ、スキル名、熟達度、使用例 |
+| `projects` | 作品・活動の情報 |
+| `audiences` | 応募先別の表示設定 |
 
-## 応募先ごとに変える
+画像は `assets/portrait.jpg` のような相対パスで指定します。
 
-`portfolio-data.js` の `audiences` に定義します。用意した3種類は `iot`、`web`、`experience`。`defaultAudience` は `iot` です。
+スキルの `level` は `null`（未設定）、`1`（学習中）、`2`（制作経験あり）、`3`（自力で設計・改善できる）のいずれか。`evidence` に制作物や実際の担当内容を書きます。設定例の名称は追加・削除可能です。
 
-- `title` / `lead`: 冒頭の見出しと紹介文
-- `projectOrder`: 掲載する作品のID。先頭が大きく表示されます。配列から外した作品は一覧に出ません。
-- `skillOrder`: 掲載するスキルのIDと表示順
-- `introduction` / `vision`: 任意。応募先専用の自己紹介・展望
-- `projectOverrides`: 任意。同じ作品でも強調する概要や担当の説明を変更できます。
-- `company`: 編集パネル内の識別用。本文には会社名を出しません。
+作品の `behindScenes` に苦労話を設定します。実際に起きた出来事を `title`、`problem`、`solution`、`lesson` に記入します。不要なら `null` にします。裏メニューの見本は架空の実績ではなく、記入待ちの枠です。
 
-例として、`audiences` の中に次の設定を追加します（カンマの位置に注意）。`projectOrder` や `skillOrder` は既存のIDを指定してください。
+## 応募先ごとの変更
+
+用意した構成は `iot`、`web`、`experience` です。`audiences` に任意のIDを追加できます。
 
 ```js
 companyA: {
-  label: "IoT・試作開発",
-  company: "応募先A", // 管理用。実際の会社名でも任意の呼び名でも構いません。
-  eyebrow: "PHYSICAL COMPUTING / PROTOTYPING",
-  title: ["画面の外まで、", "つくりにいく。"],
-  lead: "この応募先に伝えたい、自分の強みを記入します。",
-  focus: "試作 × 現場での検証",
-  projectOrder: ["physical", "yatai", "web"],
-  skillOrder: ["physical", "software", "creative"],
-  introduction: "応募先に合わせた自己紹介。省略すると共通の紹介文になります。",
-  vision: "その仕事で実現したいこと。",
+  label: 'IoT開発',
+  company: '応募先A',
+  interests: 'IoT・組み込み開発',
+  introduction: '応募先に応じた事実ベースの自己紹介。省略時は共通の文章。',
+  projectOrder: ['physical', 'web', 'yatai'],
+  skillOrder: ['physical', 'software', 'creative'],
   projectOverrides: {
     physical: {
-      summary: "この会社に伝えたい観点から書いた作品概要。",
-      process: "検証や改善など、特に見せたいプロセス。"
+      role: 'この応募先に伝えたい具体的な担当範囲',
+      process: '特に説明したい検証・改善の過程'
     }
   }
 }
 ```
 
-共有URLは `?for=companyA`。編集用は `?for=companyA&edit=1` です。
-編集パネルの「表示URLをコピー」は `edit=1` を外したURLをコピーします。設定はファイルに保存されるので、URLを受け取った相手も同じ構成を見られます。存在しないIDは既定のIoT版に戻ります。
+- 閲覧用：`?for=companyA`
+- 切り替えパネル付き：`?for=companyA&edit=1`
+- `projectOrder` / `skillOrder` は掲載する項目と順番。配列に含まれない項目は一覧に表示しません。
+- `projectOverrides` で同じ作品の記述を応募先ごとに変更できます。
+- `skillOverrides` にカテゴリ単位で `items` を指定すると、見せるスキルを変えられます。
+- 「表示URLをコピー」はパネルを出さない閲覧用URLをコピーします。
 
-これは同じ公開サイト内の見せ方の切り替えです。会社名や非表示にした内容も公開ファイルから閲覧できるので、非公開情報を格納する用途ではありません。屋台の短い人柄紹介は共通セクションとして残ります。
+会社名はパネル内だけに表示しますが、URLによる切り替えはアクセス制限ではありません。公開ファイル内の他の設定も閲覧できるため、機密情報を入れないでください。
 
-## 作品を追加・更新する
-
-`projects` の項目をコピーして新しいIDを付け、`projectOrder` に追加します。
-
-- `image`: メイン画像の相対パス。例 `assets/work-01.jpg`
-- `imageAlt`: 画像が伝えている内容
-- `period` / `team` / `role` / `tools`: 期間、体制、担当、技術
-- `problem` / `intention` / `process` / `outcome` / `learning`: 課題、意図、過程、成果、学び
-- `processImages`: 補助画像。以下の形式で2枚程度
-
-```js
-processImages: [
-  { src: "assets/sketch.jpg", alt: "初期構想のスケッチ", caption: "検討した案と選択理由" },
-  { src: "assets/prototype.jpg", alt: "検証中の試作品", caption: "試して分かったこと" }
-]
-```
-
-スキルは星による自己評価を置かず、扱った技術と制作の証拠を対応づける構成です。掲載作品は件数を増やすより、応募先に合ったものを3〜5件程度選ぶ想定です。
-
-## ローカル確認
+## 確認方法
 
 ```sh
 python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
-http://127.0.0.1:8765/?edit=1 で確認できます。スマートフォン幅ではパネルは最初に折りたたまれます。作品詳細は閉じるボタン・Escキー・背景クリックで閉じられます。
+http://127.0.0.1:8765/?edit=1 を開きます。
 
-屋台は専用のスペース内でスクロールに合わせて移動します。OSの「視差効果を減らす」などの設定が有効なら静止します。
+- 暖簾は通常のスクロールに連動します。「内容へ進む」で直接自己紹介へ進めます。
+- 4分割枠はPCでホバーすると広がり、ボタンやキーボードでも詳細を表示できます。
+- スマートフォンでは4分割を2列×2段に変更します。
+- 動きを減らすOS設定では、暖簾・矢印・メニュー札のアニメーションを止めます。
+- 期間・担当範囲・使用技術・成果は詳細を開かなくても読めます。
 
-## 内容完成後の公開
+## 公開
 
-1. 画像と文章を入力し、空欄や見本が残っていないことを確認する。
-2. `portfolio-data.js` の `template` を `false` にする。
-3. 検索エンジンへの掲載も開始する場合は、`index.html` の `<meta name="robots" content="noindex">` を削除する。
-4. HTML・CSS・JavaScript・`assets/` をリポジトリのルートに配置する。GitHub Pages は `main` のルートを公開しているので、自動反映される。
+このワークスペースのルートが編集元です。GitHubでは確認版を `preview/` に配置しています。既存の提出用ページはリポジトリのルートにあります。
 
-GitHub側ではこのテンプレート一式は現在 `preview/` に置かれています。このワークスペースではルートがテンプレートの編集元です。更新するときは確認版を `preview/` に配置し、完成時にルートへの切り替えを行います。
+内容完成後は `template: false` にし、残った記入待ち・写真プレースホルダーを確認します。検索への掲載を開始する場合はHTMLの `noindex` を削除します。完成版のHTML・CSS・JS・画像・PDFをリポジトリのルートへ配置すると、GitHub Pagesで公開されます。

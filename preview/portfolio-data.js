@@ -1,86 +1,83 @@
-/*
- * このファイルが内容の編集場所です。HTMLを変更せずに文章と作品を更新できます。
- * 応募先を増やすときは audiences の iot を複製し、会社名の代わりに任意のIDをキーにします。
- * 例: audiences.companyA = { ... } → ?for=companyA
- * URLの切り替えは表示の出し分けです。公開ファイルの内容は誰でも閲覧できます。
+/* 内容はこのファイルで編集します。?for=iot / web / experience で応募先別の構成を選択。
+ * audiences に任意のIDを追加すれば、そのIDの共有URLを作れます。
+ * 公開ファイル内の設定は閲覧可能です。非公開情報は記載しないでください。
  */
 window.PORTFOLIO = {
-  // 内容を入れ終わったら false にすると「レイアウトプレビュー」表記が消えます。
   template: true,
-  defaultAudience: "iot",
+  defaultAudience: 'iot',
+  entrance: {
+    title: ['夜を行く！', '屋台人！'],
+    // 自作の暖簾画像があれば相対パスを指定。空欄ならCSSの暖簾を使用します。
+    curtainImage: '',
+    // 両手を広げた写真に差し替えるパス。空欄ならシルエットの見本を表示します。
+    welcomeImage: '',
+    welcomeAlt: '両手を広げた岩田快道の写真'
+  },
   person: {
-    name: "岩田 快道", roman: "KAIDO IWATA", initials: "KI",
-    affiliation: "京都産業大学大学院 先端情報学研究科",
-    introduction: "ソフトウェア開発から、IoT・デジタルファブリケーションまで。領域を横断しながら、現実空間の課題に向き合うモノづくりに取り組んでいます。",
-    email: "i2686019@cc.kyoto-su.ac.jp",
-    github: "https://github.com/kaikai-kitan",
-    // 相対パスの例: assets/portrait.jpg。空欄ならイニシャルを表示します。
-    portrait: "",
-    vision: "技術を、人の暮らしにつながるかたちに。",
-    story: "大学時代の後半には、屋台活動にも取り組んできました。画面の中だけでなく、人が集まる現場での経験も、私のモノづくりを形づくる一つの要素です。"
+    name: '岩田 快道', reading: 'いわた かいど', roman: 'KAIDO IWATA',
+    affiliation: '京都産業大学大学院 先端情報学研究科',
+    grade: '修士1年',
+    introduction: 'ソフトウェア開発、IoT、デジタルファブリケーション、映像制作に取り組んでいます。大学時代の後半には屋台活動も行っています。',
+    research: '',
+    interests: 'IoT・ハードウェア / ソフトウェア開発',
+    email: 'i2686019@cc.kyoto-su.ac.jp',
+    github: 'https://github.com/kaikai-kitan',
+    // PDFを用意したら assets/resume.pdf などを指定。
+    resume: ''
   },
+  chapters: [
+    { label: '仕込み', title: 'アイデア・設計', caption: 'アイデア出し、ハッカソン、設計の記録', image: '', alt: '', detail: '' },
+    { label: '営業', title: '開発・出店', caption: '実装、屋台の出店、プレゼンの記録', image: '', alt: '', detail: '' },
+    { label: '笑顔', title: 'チーム・利用者', caption: 'チームでの活動、利用者の反応', image: '', alt: '', detail: '' },
+    { label: '帰宅', title: '振り返り・改善', caption: '活動後の振り返り、次の試作への改善', image: '', alt: '', detail: '' }
+  ],
   audiences: {
-    iot: {
-      label: "IoT・ものづくり", company: "",
-      eyebrow: "PHYSICAL COMPUTING / PROTOTYPING",
-      title: ["画面の外まで、", "つくりにいく。"],
-      lead: "ソフトウェアとハードウェアのあいだを行き来しながら、アイデアを、触れられる体験へ。",
-      focus: "ソフトウェア × ハードウェア",
-      projectOrder: ["physical", "web", "yatai"],
-      skillOrder: ["physical", "software", "creative"]
-    },
-    web: {
-      label: "Web・アプリ開発", company: "",
-      eyebrow: "SOFTWARE / INTERACTION",
-      title: ["日々の気づきを、", "使えるかたちに。"],
-      lead: "身近な課題を出発点に、使う人を思い浮かべながら、アイデアをソフトウェアへ。",
-      focus: "課題発見 × ソフトウェア開発",
-      projectOrder: ["web", "physical", "yatai"],
-      skillOrder: ["software", "physical", "creative"]
-    },
-    experience: {
-      label: "企画・体験づくり", company: "",
-      eyebrow: "EXPERIENCE / COMMUNITY",
-      title: ["つくる。その先の、", "出会いまで。"],
-      lead: "屋台も、映像も、プロダクトも。人と接する場から考え、体験をつくることに関心があります。",
-      focus: "企画 × 現場での体験づくり",
-      projectOrder: ["yatai", "web", "physical"],
-      skillOrder: ["creative", "physical", "software"]
-    }
+    iot: { label: 'IoT・ものづくり', company: '', interests: 'IoT・ハードウェア / ソフトウェア開発', projectOrder: ['physical', 'web', 'yatai'], skillOrder: ['physical', 'software', 'creative'] },
+    web: { label: 'Web・アプリ開発', company: '', interests: 'Web・アプリケーション開発', projectOrder: ['web', 'physical', 'yatai'], skillOrder: ['software', 'physical', 'creative'] },
+    experience: { label: '企画・体験づくり', company: '', interests: '企画・屋台活動 / 映像制作', projectOrder: ['yatai', 'web', 'physical'], skillOrder: ['creative', 'physical', 'software'] }
   },
-  // 空欄はプレビュー用の記入枠になります。実績・数値・担当範囲は確認してから記入します。
+  // level: null = 未設定、1 = 学習中、2 = 制作経験あり、3 = 自力で設計・改善できる。
+  // evidence は使用した作品や担当の記録。確認できる内容だけを記入します。
+  skills: {
+    physical: { category: 'ハードウェア', items: [
+      { name: 'Arduino', level: null, evidence: '' },
+      { name: 'C', level: null, evidence: '' },
+      { name: 'デジタル\nファブリケーション', level: null, evidence: '' }
+    ] },
+    software: { category: 'ソフトウェア', items: [
+      { name: 'JavaScript', level: null, evidence: '' },
+      { name: 'Python', level: null, evidence: '' },
+      { name: 'C# / Unity', level: null, evidence: '' }
+    ] },
+    creative: { category: 'デザイン・映像', items: [
+      { name: 'Figma', level: null, evidence: '' },
+      { name: 'After Effects', level: null, evidence: '' },
+      { name: 'Premiere Pro', level: null, evidence: '' }
+    ] }
+  },
   projects: {
     physical: {
-      title: "Electromagnetic Informatics",
-      category: "PHYSICAL COMPUTING", kind: "physical", image: "", imageAlt: "",
-      summary: "ハードウェア領域の制作・探究。実物と試作過程を中心に紹介するケーススタディ。",
-      tags: ["ハードウェア", "プロトタイピング"],
-      period: "", team: "", role: "", tools: [],
-      problem: "", intention: "", process: "", outcome: "", learning: "",
-      processImages: [],
-      link: "https://github.com/kaikai-kitan/Electromagnetic-Informatics", linkLabel: "GitHubで見る"
+      title: 'Electromagnetic Informatics', category: 'ハードウェア',
+      image: '', imageAlt: '', imageCaption: '完成品・試作品の写真',
+      summary: '', period: '', team: '', role: '', tools: [], outcome: '',
+      problem: '', intention: '', process: '', learning: '', processImages: [],
+      link: 'https://github.com/kaikai-kitan/Electromagnetic-Informatics', linkLabel: 'GitHubで見る',
+      // null にすると裏メニューを非表示。実際に起きた出来事を記入します。
+      behindScenes: { title: '', problem: '', solution: '', lesson: '' }
     },
     web: {
-      title: "yarikuri", category: "WEB APPLICATION", kind: "web", image: "", imageAlt: "",
-      summary: "Webアプリケーションの制作。課題の発見から、設計・実装までを紹介するケーススタディ。",
-      tags: ["Webアプリ", "UI / UX"],
-      period: "", team: "", role: "", tools: [],
-      problem: "", intention: "", process: "", outcome: "", learning: "",
-      processImages: [],
-      link: "https://github.com/kaikai-kitan/yarikuri", linkLabel: "GitHubで見る"
+      title: 'yarikuri', category: 'Webアプリケーション',
+      image: '', imageAlt: '', imageCaption: 'アプリ画面・利用場面の画像',
+      summary: '', period: '', team: '', role: '', tools: [], outcome: '',
+      problem: '', intention: '', process: '', learning: '', processImages: [],
+      link: 'https://github.com/kaikai-kitan/yarikuri', linkLabel: 'GitHubで見る', behindScenes: null
     },
     yatai: {
-      title: "屋台から、はじまる。", category: "REAL-WORLD EXPERIENCE", kind: "yatai", image: "", imageAlt: "",
-      summary: "大学時代の屋台活動。企画や準備、当日の工夫を通して、人と場に向き合った経験を紹介します。",
-      tags: ["屋台活動", "体験づくり"],
-      period: "", team: "", role: "", tools: [],
-      problem: "", intention: "", process: "", outcome: "", learning: "",
-      processImages: [], link: "", linkLabel: ""
+      title: '屋台活動', category: '企画・運営',
+      image: '', imageAlt: '', imageCaption: '屋台・出店当日の写真',
+      summary: '大学時代の後半に行った屋台活動。', period: '', team: '', role: '', tools: [], outcome: '',
+      problem: '', intention: '', process: '', learning: '', processImages: [],
+      link: '', linkLabel: '', behindScenes: null
     }
-  },
-  skills: {
-    physical: { number: "01", title: "現実の世界につなぐ", english: "HARDWARE & MAKING", text: "ハードウェアとソフトウェアを組み合わせるための技術。", tools: ["Arduino", "C", "デジタルファブリケーション"] },
-    software: { number: "02", title: "動く仕組みをつくる", english: "SOFTWARE DEVELOPMENT", text: "アイデアを動かし、試しながら改善するための技術。", tools: ["JavaScript", "Python", "C#", "Unity", "GitHub"] },
-    creative: { number: "03", title: "伝わるかたちにする", english: "DESIGN & VISUAL", text: "伝えたいことを、画面や映像として表現するための技術。", tools: ["Figma", "After Effects", "Premiere Pro"] }
   }
 };

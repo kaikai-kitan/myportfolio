@@ -1,161 +1,189 @@
 (() => {
   'use strict';
   const data = window.PORTFOLIO;
-  const $ = (selector) => document.querySelector(selector);
-  const params = new URLSearchParams(location.search);
+  const $ = selector => document.querySelector(selector);
+  const all = selector => [...document.querySelectorAll(selector)];
   const owns = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
-  const fallbackAudience = owns(data.audiences, data.defaultAudience) ? data.defaultAudience : Object.keys(data.audiences)[0];
-  const requested = params.get('for');
-  let audienceKey = requested && owns(data.audiences, requested) ? requested : fallbackAudience;
-  const editorMode = params.get('edit') === '1';
-  const escapeHTML = (text = '') => String(text).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[ch]);
-  function safeLink(value, image = false) {
+  const escape = (value = '') => String(value).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[ch]);
+  const safeURL = value => {
     if (!value) return '';
-    try {
-      const url = new URL(value, location.href);
-      if (image) return ['http:', 'https:'].includes(url.protocol) ? url.href : '';
-      return ['https:', 'http:', 'mailto:'].includes(url.protocol) ? url.href : '';
-    } catch { return ''; }
+    try { const url = new URL(value, location.href); return ['https:','http:'].includes(url.protocol) ? url.href : ''; }
+    catch { return ''; }
+  };
+  const missing = (value, hint = '記入待ち') => value ? escape(value) : `<span class="missing">${escape(hint)}</span>`;
+  const imageIcon = '<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><rect x="8" y="11" width="48" height="42" rx="2"/><circle cx="24" cy="24" r="5"/><path d="m9 46 14-12 9 7 10-14 14 19"/></svg>';
+  const validIds = (order, collection) => [...new Set(order || [])].filter(id => owns(collection, id));
+  const defaultKey = owns(data.audiences, data.defaultAudience) ? data.defaultAudience : Object.keys(data.audiences)[0];
+  const readKey = () => {
+    const key = new URLSearchParams(location.search).get('for');
+    return key && owns(data.audiences, key) ? key : defaultKey;
+  };
+  let audienceKey = readKey();
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  let skillObserver;
+
+  function projectMarkup(project, index) {
+    const image = safeURL(project.image);
+    const artwork = image
+      ? `<img class="project-image" src="${escape(image)}" alt="${escape(project.imageAlt || project.title)}" loading="lazy">`
+      : `<div class="project-placeholder">${imageIcon}<p>${escape(project.imageCaption || '作品の写真・画像')}</p><small>PHOTO PLACEHOLDER</small></div>`;
+    const meta = [
+      ['制作期間', project.period], ['体制・人数', project.team],
+      ['担当範囲', project.role], ['使用技術', (project.tools || []).join(' / ')], ['成果', project.outcome]
+    ];
+    const detailRows = [
+      ['課題・目的', project.problem, '対象と解決したかった課題を記入します。'],
+      ['設計の意図', project.intention, 'この技術・仕組みを選んだ理由を記入します。'],
+      ['制作・検証の過程', project.process, '試作、検証、改善の流れを記入します。'],
+      ['学び・次の改善', project.learning, '得られた知見と今後の改善点を記入します。']
+    ];
+    const images = (project.processImages || []).filter(item => safeURL(item.src));
+    const processImages = images.length
+      ? images.map(item => `<figure><img src="${escape(safeURL(item.src))}" alt="${escape(item.alt || '')}" loading="lazy"><figcaption>${escape(item.caption || '')}</figcaption></figure>`).join('')
+      : '<div class="process-placeholder">設計図・スケッチを追加</div><div class="process-placeholder">試作品・検証時の写真を追加</div>';
+    return `<article class="project ${index % 2 ? 'reverse' : ''}" aria-labelledby="project-title-${index}"><div class="wrap"><div class="project-layout"><figure class="project-figure">${artwork}<figcaption>${escape(project.imageCaption || '作品画像')}</figcaption></figure><div class="project-copy"><p class="project-kicker"><span class="project-number">${String(index + 1).padStart(2,'0')}</span>${escape(project.category)}</p><h3 id="project-title-${index}">${escape(project.title)}</h3><p class="project-summary">${missing(project.summary, '概要を記入予定：何を、誰のためにつくったかを説明します。')}</p><dl class="project-meta">${meta.map(([label,value]) => `<div><dt>${label}</dt><dd>${missing(value)}</dd></div>`).join('')}</dl>${safeURL(project.link) ? `<a class="project-source" href="${escape(safeURL(project.link))}" target="_blank" rel="noopener noreferrer">${escape(project.linkLabel || '関連リンク')} ↗</a>` : ''}</div></div><details class="project-details"><summary>${escape(project.title)}：制作過程・補足資料を読む</summary><div class="detail-body">${detailRows.map(([label,value,hint]) => `<div class="detail-row"><h4>${label}</h4><p>${missing(value, hint)}</p></div>`).join('')}<div class="process-images">${processImages}</div></div></details></div></article>${storyMarkup(project, index)}`;
   }
-  const orderedIds = (order, collection) => [...new Set(Array.isArray(order) ? order : [])].filter(id => owns(collection, id));
-  const resolveProject = id => ({ ...data.projects[id], ...(data.audiences[audienceKey].projectOverrides?.[id] || {}) });
-  const tags = (items = []) => `<ul class="tags">${items.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>`;
-  const artPath = project => `assets/${['physical','web','yatai'].includes(project.kind) ? project.kind : 'physical'}.svg`;
-  function artwork(project, className) {
-    const source = safeLink(project.image, true);
-    return `<div class="${className}"><img src="${escapeHTML(source || artPath(project))}" alt="${escapeHTML(source ? (project.imageAlt || project.title) : '')}" loading="lazy">${source ? '' : '<span class="visual-label">VISUAL STUDY</span><span class="visual-note">イメージ見本 / 実際の作品画像に差し替え</span>'}</div>`;
+  function storyMarkup(project, index) {
+    const story = project.behindScenes;
+    if (!story) return '';
+    const steps = [
+      ['起', '課題・失敗', story.problem, '実際に直面した問題や失敗、その状況を記入します。'],
+      ['承・転', '対応・解決', story.solution, '原因の調査、試した方法、自分が行った対応を記入します。'],
+      ['結', '得られた教訓', story.lesson, '結果と、その後の設計や運営に活かしたことを記入します。']
+    ];
+    return `<section class="behind-scenes" aria-labelledby="story-title-${index}"><div class="wrap"><div class="behind-heading"><span class="behind-label">裏メニュー</span><div><h3 id="story-title-${index}">${escape(story.title || '開発中の課題と解決策')}</h3><p>${escape(project.title)}${story.title ? '' : ' ／ エピソードを記入予定'}</p></div></div><div class="story-grid">${steps.map(([step,label,value,hint]) => `<div class="story-step"><h4><span>${step}</span>${label}</h4><p>${missing(value,hint)}</p></div>`).join('')}</div></div></section>`;
   }
+
+  function renderSkills(audience) {
+    skillObserver?.disconnect();
+    let index = 0;
+    const labels = ['未設定', '学習中', '制作経験あり', '自力で設計・改善'];
+    $('#skill-board').innerHTML = validIds(audience.skillOrder, data.skills).map(id => {
+      const group = { ...data.skills[id], ...(audience.skillOverrides?.[id] || {}) };
+      return group.items.map(skill => {
+        const level = Number.isInteger(skill.level) && skill.level >= 1 && skill.level <= 3 ? skill.level : 0;
+        const accessible = level ? `熟達度 ${level}/3：${labels[level]}` : '熟達度は未設定';
+        return `<article class="skill-plaque" style="--delay:${(index++ % 6) * 75}ms"><span class="skill-category">${escape(group.category)}</span><h3 class="skill-name ${(skill.name.length > 15 || skill.name.includes('\n')) ? 'long' : ''}">${escape(skill.name)}</h3><div class="lemons" role="img" aria-label="${accessible}">${[1,2,3].map(i => `<span aria-hidden="true" class="lemon ${i > level ? 'empty' : ''}">🍋</span>`).join('')}</div><p class="skill-level">${level ? labels[level] : '熟達度：未設定'}</p><p class="skill-evidence">${escape(skill.evidence || '使用例を記入予定')}</p></article>`;
+      }).join('');
+    }).join('');
+    if (!reduced.matches && 'IntersectionObserver' in window) {
+      const plaques = all('.skill-plaque');
+      plaques.forEach(plaque => plaque.classList.add('waiting'));
+      skillObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.remove('waiting');
+        entry.target.classList.add('revealed');
+        skillObserver.unobserve(entry.target);
+      }), { threshold: .12 });
+      plaques.forEach(plaque => skillObserver.observe(plaque));
+    }
+  }
+
   function renderAudience(updateURL = false) {
     const audience = data.audiences[audienceKey];
-    $('#hero-title').replaceChildren(...audience.title.map(line => { const span = document.createElement('span'); span.textContent = line; return span; }));
-    $('#hero-eyebrow').textContent = audience.eyebrow;
-    $('#hero-lead').textContent = audience.lead;
-    $('#hero-focus').textContent = audience.focus;
-    $('#about-description').textContent = audience.introduction || data.person.introduction;
-    $('#vision').textContent = audience.vision || data.person.vision;
-    const projectIds = orderedIds(audience.projectOrder, data.projects);
-    $('#projects').innerHTML = projectIds.map((id, index) => {
-      const project = resolveProject(id);
-      return `<article class="project-card ${index === 0 ? 'featured' : ''}" data-kind="${escapeHTML(project.kind)}">${artwork(project, 'project-visual')}<div class="project-info"><p class="project-eyebrow"><span class="project-index">${String(index + 1).padStart(2, '0')}</span>${escapeHTML(project.category)}</p><h3>${escapeHTML(project.title)}</h3><p class="project-summary">${escapeHTML(project.summary)}</p>${tags(project.tags)}<button class="project-open" type="button" data-project="${escapeHTML(id)}" aria-label="${escapeHTML(project.title)}の制作プロセスを見る">制作プロセスを見る <span aria-hidden="true">↗</span></button></div></article>`;
+    $('#introduction').textContent = audience.introduction || data.person.introduction;
+    const facts = [
+      ['所属', `${data.person.affiliation}${data.person.grade ? ' / ' + data.person.grade : ''}`],
+      ['研究', audience.research || data.person.research],
+      ['関心領域', audience.interests || data.person.interests]
+    ];
+    $('#profile-facts').innerHTML = facts.map(([label,value]) => `<div><dt>${label}</dt><dd>${missing(value,'研究テーマを記入予定')}</dd></div>`).join('');
+    $('#projects').innerHTML = validIds(audience.projectOrder, data.projects).map((id, index) => {
+      const project = { ...data.projects[id], ...(audience.projectOverrides?.[id] || {}) };
+      return projectMarkup(project, index);
     }).join('');
-    $('#skills').innerHTML = orderedIds(audience.skillOrder, data.skills).map((id, index) => {
-      const skill = data.skills[id];
-      return `<article class="skill-card"><span class="skill-number">${String(index + 1).padStart(2, '0')} /</span><h4>${escapeHTML(skill.title)}</h4><p class="skill-english">${escapeHTML(skill.english)}</p><p>${escapeHTML(skill.text)}</p>${tags(skill.tools)}</article>`;
-    }).join('');
+    renderSkills(audience);
     if (updateURL) {
-      const url = new URL(location.href);
-      url.searchParams.set('for', audienceKey);
-      history.replaceState(null, '', url);
+      const url = new URL(location.href); url.searchParams.set('for',audienceKey);
+      history.replaceState(null,'',url);
     }
     $('#audience-select').value = audienceKey;
-    const viewerURL = new URL(location.href);
-    viewerURL.searchParams.set('for', audienceKey);
-    viewerURL.searchParams.delete('edit');
-    viewerURL.hash = '';
-    $('#view-link').href = viewerURL.href;
-    document.title = `${data.person.name} — Portfolio`;
-    const description = document.querySelector('meta[name="description"]');
-    description.content = `${data.person.name}のポートフォリオ。${audience.lead}`;
-    document.querySelector('meta[property="og:description"]').content = description.content;
-    requestAnimationFrame(updateScroll);
+    const viewer = new URL(location.href);
+    viewer.searchParams.set('for',audienceKey); viewer.searchParams.delete('edit'); viewer.hash = '';
+    $('#view-link').href = viewer.href;
+    scheduleScroll();
   }
-  const person = data.person;
-  $('#person-name').textContent = person.name;
-  $('#affiliation').textContent = person.affiliation;
-  $('#about-affiliation').textContent = person.affiliation;
-  $('#about-description').textContent = person.introduction;
-  $('#vision').textContent = person.vision;
-  $('#field-story').textContent = person.story;
-  $('#github-link').href = safeLink(person.github);
-  const email = String(person.email).replace(/[\r\n]/g, '');
-  const mailto = `mailto:${email}`;
-  $('#contact-link').href = mailto;
-  $('#contact-email').href = mailto;
-  $('#contact-email').textContent = email;
-  if (safeLink(person.portrait, true)) {
-    const img = document.createElement('img'); img.src = safeLink(person.portrait, true); img.alt = `${person.name}のプロフィール写真`; img.loading = 'lazy';
-    $('#portrait').replaceChildren(img);
-  }
-  $('#template-badge').hidden = !data.template;
-  $('#works-note').hidden = !data.template;
-  if (!data.template) document.querySelector('meta[name="robots"]').remove();
 
-  const dialog = $('#project-dialog');
-  let previousFocus = null;
-  const contentOrHint = (content, hint) => content ? `<p>${escapeHTML(content)}</p>` : `<p class="placeholder">${escapeHTML(hint)}</p>`;
-  function openProject(id) {
-    if (!owns(data.projects, id)) return;
-    const project = resolveProject(id);
-    previousFocus = document.activeElement;
-    const meta = [ ['制作期間', project.period], ['チーム・体制', project.team], ['担当範囲', project.role], ['使用ツール', (project.tools || []).join(' / ')] ];
-    const steps = [
-      ['01 / CONTEXT', '課題と目的', project.problem, '誰が、どんな場面で困っていたのか。対象と解決したかった課題を2〜3行で記入します。'],
-      ['02 / INTENTION', '設計の意図', project.intention, 'なぜこの仕組み・形・技術を選んだのか。比較した案や判断の理由を記入します。'],
-      ['03 / PROCESS', '試作と工夫', project.process, '試作 → 検証 → 改善の流れと、自分が担当した具体的な工夫を記入します。'],
-      ['04 / OUTCOME', '成果と結果', project.outcome, '確認できる結果、利用者の反応、検証で分かったことを記入します。数値は根拠があるものだけを記載します。'],
-      ['05 / LEARNING', '学びと次の一歩', project.learning, 'うまくいったこと、残った課題、次にどう改善したいかを簡潔に記入します。']
-    ];
-    const processImages = (project.processImages || []).filter(item => safeLink(item.src, true));
-    const supporting = processImages.length ? processImages.map(item => `<figure><img src="${escapeHTML(safeLink(item.src, true))}" alt="${escapeHTML(item.alt || '')}" loading="lazy"><figcaption>${escapeHTML(item.caption || '')}</figcaption></figure>`).join('') : '<div class="process-placeholder"><span aria-hidden="true">＋</span><small>アイデアスケッチ・設計図</small></div><div class="process-placeholder"><span aria-hidden="true">＋</span><small>試作品・検証の様子</small></div>';
-    $('#detail-content').innerHTML = `<p class="eyebrow">${escapeHTML(project.category)}</p><h2 id="detail-title">${escapeHTML(project.title)}</h2><p class="detail-summary">${escapeHTML(project.summary)}</p>${artwork(project, 'detail-visual')}<dl class="detail-meta">${meta.map(([label,value]) => `<div><dt>${label}</dt><dd${value ? '' : ' class="placeholder"'}>${escapeHTML(value || '内容を追加予定')}</dd></div>`).join('')}</dl>${steps.map(([english, label, content, hint], index) => `<section class="detail-story"><h3><small>${english}</small>${label}</h3>${contentOrHint(content, hint)}</section>${index === 2 ? `<div class="process-images">${supporting}</div>` : ''}`).join('')}${safeLink(project.link) ? `<div class="detail-external"><a class="text-link" href="${escapeHTML(safeLink(project.link))}" target="_blank" rel="noopener noreferrer">${escapeHTML(project.linkLabel || '関連リンク')} <span aria-hidden="true">↗</span></a></div>` : ''}`;
-    dialog.showModal(); dialog.scrollTop = 0; document.body.classList.add('modal-open'); $('#close-dialog').focus();
+  function renderChapters() {
+    $('#chapters').innerHTML = data.chapters.map((chapter,index) => `<article class="chapter"><div class="chapter-photo">${safeURL(chapter.image) ? `<img src="${escape(safeURL(chapter.image))}" alt="${escape(chapter.alt || chapter.caption)}" loading="lazy">` : `<div class="chapter-placeholder">${imageIcon}<span>PHOTO ${String(index+1).padStart(2,'0')}</span></div>`}</div><span class="chapter-number">${String(index+1).padStart(2,'0')}</span><div class="chapter-content"><p class="chapter-label">${escape(chapter.label)}</p><h3>${escape(chapter.title)}</h3><p class="chapter-caption">${escape(chapter.caption)}</p><button class="chapter-toggle" type="button" aria-expanded="false" aria-controls="chapter-detail-${index}">${escape(chapter.label)}の詳細 <span aria-hidden="true">＋</span></button><div class="chapter-detail" id="chapter-detail-${index}" tabindex="0" hidden>${escape(chapter.detail || '写真にまつわる活動内容・自分の役割・具体的なエピソードを記入予定です。')}</div></div></article>`).join('');
+    const canHover = matchMedia('(hover:hover) and (pointer:fine)');
+    all('.chapter').forEach(chapter => {
+      let pinned = false;
+      let suppressHover = false;
+      const button = chapter.querySelector('button');
+      const detail = chapter.querySelector('.chapter-detail');
+      function expand(open) {
+        chapter.classList.toggle('expanded',open);
+        button.setAttribute('aria-expanded',String(open));
+        button.querySelector('span').textContent = open ? '−' : '＋';
+        detail.hidden = !open;
+      }
+      chapter.addEventListener('pointerenter', () => { if (canHover.matches && !suppressHover) expand(true); });
+      chapter.addEventListener('pointerleave', () => { suppressHover = false; if (!pinned) expand(false); });
+      chapter.addEventListener('focusout', event => { if (!pinned && !chapter.contains(event.relatedTarget)) expand(false); });
+      button.addEventListener('click', () => { pinned = !pinned; suppressHover = !pinned; expand(pinned); });
+    });
   }
-  document.addEventListener('click', event => {
-    const trigger = event.target.closest('[data-project]');
-    if (trigger && !dialog.open) openProject(trigger.dataset.project);
-  });
-  $('#close-dialog').addEventListener('click', () => dialog.close());
-  dialog.addEventListener('click', event => {
-    if (event.target !== dialog) return;
-    const rect = dialog.getBoundingClientRect();
-    if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
-  });
-  dialog.addEventListener('close', () => {
-    document.body.classList.remove('modal-open');
-    if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
-  });
 
-  $('#audience-select').innerHTML = Object.entries(data.audiences).map(([key, audience]) => `<option value="${escapeHTML(key)}">${escapeHTML(audience.company ? `${audience.company} / ${audience.label}` : audience.label)}</option>`).join('');
-  $('#editor-panel').hidden = !editorMode;
+  $('#entrance-title').replaceChildren(...data.entrance.title.map(line => { const span = document.createElement('span'); span.textContent = line; return span; }));
+  const curtainImage = safeURL(data.entrance.curtainImage);
+  if (curtainImage) {
+    $('#curtain').classList.add('custom-curtain');
+    $('#curtain').style.backgroundImage = `url(${JSON.stringify(curtainImage)})`;
+  }
+  if (safeURL(data.entrance.welcomeImage)) {
+    $('#welcome-image').src = safeURL(data.entrance.welcomeImage);
+    $('#welcome-image').alt = data.entrance.welcomeAlt;
+    $('#welcome-photo-note').hidden = true;
+  }
+  $('#welcome-name').textContent = data.person.name;
+  $('#welcome-affiliation').textContent = data.person.affiliation;
+  $('#person-name').textContent = data.person.name;
+  $('#person-reading').textContent = data.person.reading;
+  $('#person-roman').textContent = data.person.roman;
+  $('#contact-email').textContent = data.person.email;
+  $('#contact-email').href = `mailto:${data.person.email.replace(/[\r\n]/g,'')}`;
+  $('#github-link').href = safeURL(data.person.github);
+  if (safeURL(data.person.resume)) $('#resume-action').innerHTML = `<a href="${escape(safeURL(data.person.resume))}" download>PDF版レジュメをダウンロード ↓</a>`;
+  ['#template-badge','#skills-note','#works-note'].forEach(selector => { $(selector).hidden = !data.template; });
+
+  $('#audience-select').innerHTML = Object.entries(data.audiences).map(([id,audience]) => `<option value="${escape(id)}">${escape(audience.company ? `${audience.company} / ${audience.label}` : audience.label)}</option>`).join('');
+  $('#editor-panel').hidden = new URLSearchParams(location.search).get('edit') !== '1';
+  $('#editor-toggle').addEventListener('click', () => {
+    const open = $('#editor-toggle').getAttribute('aria-expanded') !== 'true';
+    $('#editor-toggle').setAttribute('aria-expanded',String(open)); $('#editor-body').hidden = !open;
+    $('#editor-indicator').textContent = open ? '−' : '＋';
+  });
   $('#audience-select').addEventListener('change', event => {
     audienceKey = event.target.value; renderAudience(true);
     $('#editor-status').textContent = `${data.audiences[audienceKey].label}の構成に変更しました。`;
   });
-  function toggleEditor(expanded) {
-    $('#editor-toggle').setAttribute('aria-expanded', String(expanded));
-    $('#editor-body').hidden = !expanded;
-    $('#editor-indicator').textContent = expanded ? '−' : '＋';
-  }
-  $('#editor-toggle').addEventListener('click', () => toggleEditor($('#editor-toggle').getAttribute('aria-expanded') !== 'true'));
-  if (matchMedia('(max-width:700px)').matches) toggleEditor(false);
   $('#copy-link').addEventListener('click', async () => {
-    const url = $('#view-link').href;
-    try { await navigator.clipboard.writeText(url); $('#editor-status').textContent = '閲覧用URLをコピーしました。'; }
-    catch { $('#editor-status').textContent = `コピーできませんでした。「閲覧用表示」のURLをお使いください：${url}`; }
+    try { await navigator.clipboard.writeText($('#view-link').href); $('#editor-status').textContent = '閲覧用URLをコピーしました。'; }
+    catch { $('#editor-status').textContent = `「閲覧用表示」のリンクをご利用ください：${$('#view-link').href}`; }
   });
-  window.addEventListener('popstate', () => {
-    const key = new URLSearchParams(location.search).get('for');
-    const nextKey = key && owns(data.audiences, key) ? key : fallbackAudience;
-    if (nextKey !== audienceKey) { audienceKey = nextKey; renderAudience(); }
-  });
-
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  window.addEventListener('popstate', () => { const next = readKey(); if (next !== audienceKey) { audienceKey = next; renderAudience(); } });
   let framePending = false;
   function updateScroll() {
     framePending = false;
-    const maxScroll = document.documentElement.scrollHeight - innerHeight;
-    $('#progress').style.transform = `scaleX(${maxScroll > 0 ? Math.max(0, Math.min(1, scrollY / maxScroll)) : 0})`;
-    const field = $('#field').getBoundingClientRect();
-    const track = $('.cart-track');
-    const trackWidth = track.clientWidth;
-    const travel = Math.max(0, trackWidth - 190);
-    const position = reducedMotion.matches ? .64 : Math.max(0, Math.min(1, (innerHeight - field.top) / (innerHeight + field.height)));
-    $('#cart').style.transform = `translateX(${20 + travel * position}px)`;
+    const entrance = $('.entrance');
+    const rect = entrance.getBoundingClientRect();
+    const distance = Math.max(1,entrance.offsetHeight - $('.entrance-stage').offsetHeight);
+    const amount = Math.max(0,Math.min(1,-rect.top/distance));
+    $('#curtain').style.setProperty('--curtain-y',`${-105 * amount}%`);
+    $('.welcome-name').style.opacity = String(Math.max(0, Math.min(1, (amount - .12) / .25)));
+    // 見えなくなった入口のリンクがTab移動で選択されないようにする。
+    $('#curtain').inert = !reduced.matches && amount >= .99;
+    $('.welcome-scene').inert = reduced.matches || amount < .45;
   }
   function scheduleScroll() { if (!framePending) { framePending = true; requestAnimationFrame(updateScroll); } }
-  window.addEventListener('scroll', scheduleScroll, { passive: true });
-  window.addEventListener('resize', scheduleScroll);
-  window.addEventListener('load', scheduleScroll);
-  reducedMotion.addEventListener('change', scheduleScroll);
+  window.addEventListener('scroll',scheduleScroll,{passive:true});
+  window.addEventListener('resize',scheduleScroll);
+  window.addEventListener('load',scheduleScroll);
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) { skillObserver?.disconnect(); all('.skill-plaque').forEach(plaque => plaque.classList.remove('waiting')); }
+    scheduleScroll();
+  });
+  renderChapters();
   renderAudience();
 })();
