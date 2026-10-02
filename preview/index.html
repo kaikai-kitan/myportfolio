@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="岩田快道のポートフォリオ。ソフトウェアとハードウェアを横断するモノづくりと、屋台活動の記録。">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f5f4ed">
+  <meta property="og:title" content="Kaido Iwata — Portfolio">
+  <meta property="og:description" content="画面の外まで、つくりにいく。ソフトウェアとハードウェアを横断するポートフォリオ。">
+  <meta property="og:type" content="website">
+  <title>Kaido Iwata — Portfolio</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="portfolio-data.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div class="reading-progress" aria-hidden="true"><span id="progress"></span></div>
+  <header class="site-header wrap">
+    <a class="identity" href="#top" aria-label="岩田快道 トップへ"><span class="monogram">ki<span>.</span></span><span>KAIDO IWATA<span class="identity-sub">PORTFOLIO / 2026</span></span></a>
+    <nav aria-label="メインナビゲーション"><a href="#works">Works<span>制作・活動</span></a><a href="#about">About<span>私について</span></a><a href="#contact" class="nav-contact">Contact <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap" id="top" aria-labelledby="hero-title">
+      <div class="hero-topline"><p class="eyebrow" id="hero-eyebrow">PHYSICAL COMPUTING / PROTOTYPING</p><span class="template-badge" id="template-badge">LAYOUT PREVIEW</span></div>
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <h1 id="hero-title"><span>画面の外まで、</span><span>つくりにいく。</span></h1>
+          <p class="hero-lead" id="hero-lead"></p>
+          <a class="text-link hero-link" href="#works">制作・活動を見る <span class="circle-arrow" aria-hidden="true">↓</span></a>
+        </div>
+        <div class="hero-aside">
+          <div class="thinking-model" aria-hidden="true">
+            <span class="model-caption">A LITTLE CURIOSITY.<br>A TANGIBLE IDEA.</span>
+            <div class="model-orbit"></div><div class="model-orbit second"></div>
+            <span class="model-node node-one">考える</span><span class="model-node node-two">つくる</span><span class="model-node node-three">試す</span>
+            <div class="model-core"><svg viewBox="0 0 80 80"><path d="M40 10 67 26v29L40 71 13 55V26Z M13 26l27 16 27-16 M40 42v29 M26 18l28 17 M26 34l27-16" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></div>
+            <span class="model-plus plus-one">+</span><span class="model-plus plus-two">+</span>
+          </div>
+          <div class="hero-person"><span class="availability-dot"></span><div><p>岩田 快道 <span>Kaido Iwata</span></p><small id="affiliation"></small></div></div>
+        </div>
+      </div>
+      <div class="hero-bottom"><span class="small-label">MY PERSPECTIVE</span><p id="hero-focus"></p><a href="#works" class="scroll-hint">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a></div>
+    </section>
+    <section class="works-section" id="works" aria-labelledby="works-title">
+      <div class="wrap">
+        <div class="section-heading"><div><p class="eyebrow"><span class="section-number">01</span> SELECTED WORKS</p><h2 id="works-title">考えたことを、かたちに。</h2></div><p class="section-intro">何をつくったか。なぜ、そうつくったか。<br>制作と活動を、プロセスとともに。</p></div>
+        <p class="template-note" id="works-note"><span aria-hidden="true">◇</span> レイアウト見本です。作品画像・担当範囲・成果は、これから追加します。</p>
+        <div class="projects-grid" id="projects"></div>
+        <div class="works-footnote"><span>THINK → MAKE → LEARN</span><p>完成したものだけでなく、そこに至る試行錯誤も。</p></div>
+      </div>
+    </section>
+    <section class="about-section wrap" id="about" aria-labelledby="about-title">
+      <div class="section-heading"><div><p class="eyebrow"><span class="section-number">02</span> ABOUT ME</p><h2 id="about-title">好奇心に、境界線を引かない。</h2></div><span class="section-side-note">A PERSON BEHIND THE PROJECTS</span></div>
+      <div class="about-grid">
+        <div class="profile-visual" id="portrait"><span class="profile-initials" aria-hidden="true">ki.</span><span class="portrait-label">PORTRAIT / TO BE ADDED</span><span class="profile-corner" aria-hidden="true">↗</span></div>
+        <div class="about-copy"><p class="eyebrow">IWATA KAIDO</p><h3 id="person-name"></h3><p class="affiliation" id="about-affiliation"></p><p class="about-description" id="about-description"></p><blockquote id="vision"></blockquote><a class="text-link" id="github-link" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a></div>
+      </div>
+      <div class="skills-heading"><h3>つくるための道具箱。</h3><p>触れてきた技術と、表現の手段。</p></div>
+      <div class="skills-grid" id="skills"></div>
+    </section>
+    <section class="field-section" id="field" aria-labelledby="field-title">
+      <div class="wrap field-layout"><div class="field-label"><p class="eyebrow">BEYOND THE SCREEN</p><span class="field-stamp">FIELD<br>NOTES <span aria-hidden="true">↗</span></span></div><div class="field-copy"><h2 id="field-title">ときには、屋台をひいて。</h2><p id="field-story"></p><button class="text-link" type="button" data-project="yatai">屋台活動について <span aria-hidden="true">↗</span></button></div></div>
+      <div class="cart-track" aria-hidden="true"><div class="cart-traveler" id="cart"><span class="cart-sign">本日も、試行錯誤。</span><img src="assets/cart.svg" alt="" width="140" height="130"></div><div class="road-line"></div><span class="road-caption">GOOD IDEAS MEET PEOPLE.</span></div>
+    </section>
+    <section class="contact-section wrap" id="contact" aria-labelledby="contact-title"><p class="eyebrow"><span class="section-number">03</span> CONTACT</p><div class="contact-row"><div><h2 id="contact-title">次は、どんなものを<br>つくろう。</h2><p>制作や活動について、お気軽にご連絡ください。</p></div><a class="contact-circle" id="contact-link" aria-label="岩田快道にメールする"><span>LET’S TALK</span><span aria-hidden="true">↗</span></a></div><a class="contact-email" id="contact-email"></a></section>
+  </main>
+  <footer class="site-footer wrap"><span>© 2026 KAIDO IWATA</span><span>MADE WITH CURIOSITY.</span><a href="#top">BACK TO TOP ↑</a></footer>
+  <noscript><p class="noscript-notice">作品一覧の表示にはJavaScriptを有効にしてください。お問い合わせ：<a href="mailto:i2686019@cc.kyoto-su.ac.jp">i2686019@cc.kyoto-su.ac.jp</a></p></noscript>
+  <dialog class="project-dialog" id="project-dialog" aria-labelledby="detail-title"><div class="dialog-toolbar"><span>PROJECT NOTES</span><button type="button" id="close-dialog" aria-label="作品詳細を閉じる">閉じる <span aria-hidden="true">×</span></button></div><div class="dialog-content" id="detail-content"></div></dialog>
+  <aside class="editor-panel" id="editor-panel" aria-label="応募先別プレビュー" hidden>
+    <button class="editor-toggle" type="button" id="editor-toggle" aria-expanded="true" aria-controls="editor-body"><span><i aria-hidden="true"></i> 応募先別プレビュー</span><span id="editor-indicator" aria-hidden="true">−</span></button>
+    <div id="editor-body"><p>冒頭・作品順・スキル順をまとめて切り替えます。</p><label for="audience-select">見せたい軸</label><select id="audience-select"></select><div class="editor-actions"><button type="button" id="copy-link">表示URLをコピー ↗</button><a id="view-link" target="_blank" rel="noopener noreferrer">閲覧用表示</a></div><p class="editor-help">この操作パネルは <code>?edit=1</code> のときだけ表示。<br>内容の編集は <code>portfolio-data.js</code> から。</p><output id="editor-status" role="status"></output></div>
+  </aside>
+</body>
+</html>

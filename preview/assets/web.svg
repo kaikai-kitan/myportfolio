@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" fill="none">
+<defs><pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0v44" stroke="#adb39f" stroke-opacity=".18"/></pattern><filter id="s"><feGaussianBlur stdDeviation="16"/></filter></defs>
+<path fill="#e4e3d9" d="M0 0h900v640H0z"/><path fill="url(#grid)" d="M0 0h900v640H0z"/><rect x="170" y="173" width="570" height="355" rx="7" fill="#b9c1ad" opacity=".5" filter="url(#s)"/>
+<rect x="139" y="121" width="590" height="380" rx="10" fill="#fafaf2" stroke="#aeb8a0"/>
+<path d="M139 161h590" stroke="#d7dccd"/><circle cx="160" cy="142" r="4" fill="#a3ad98"/><circle cx="176" cy="142" r="4" fill="#b9c3ad"/><circle cx="192" cy="142" r="4" fill="#d7dfcd"/>
+<rect x="295" y="134" width="278" height="15" rx="4" fill="#eeeee5"/>
+<path d="M270 161v340" stroke="#e0e3d6"/><rect x="160" y="184" width="23" height="23" rx="4" fill="#2c4937"/><path d="M194 191h48m-48 8h31" stroke="#7b8c70" stroke-width="4"/>
+<rect x="156" y="235" width="99" height="29" rx="3" fill="#e0e9c7"/><g stroke="#9aab85" stroke-width="4"><path d="M170 249h58m-58 39h58m-58 35h43m-43 35h52"/></g>
+<rect x="300" y="198" width="162" height="10" rx="3" fill="#536749"/><rect x="300" y="220" width="110" height="5" rx="2" fill="#a4ae97"/>
+<rect x="299" y="250" width="190" height="80" rx="5" fill="#edf0e1"/><rect x="506" y="250" width="192" height="80" rx="5" fill="#edf0e1"/>
+<path d="M316 268h60m147 0h67" stroke="#8b9b77" stroke-width="4"/><path d="M316 291h96m110 0h72" stroke="#405c38" stroke-width="10"/>
+<rect x="299" y="348" width="399" height="125" rx="5" stroke="#dbe1cd"/>
+<path d="M319 375h83M319 403h357M319 428h357M319 452h357" stroke="#d4dcc7"/>
+<path d="m432 451 43-25 39 5 42-25 39 4 41-35 43 7" stroke="#839e46" stroke-width="3"/>
+<rect x="653" y="321" width="119" height="212" rx="17" fill="#284633" stroke="#23402f"/>
+<rect x="661" y="330" width="103" height="194" rx="12" fill="#f5f6ea"/><rect x="694" y="336" width="36" height="7" rx="3" fill="#284633"/>
+<rect x="672" y="365" width="70" height="6" rx="3" fill="#7e9268"/><rect x="672" y="387" width="81" height="61" rx="4" fill="#d8e797"/><circle cx="713" cy="417" r="17" stroke="#5a773b" stroke-width="5"/><path d="m703 417 6 6 12-14" stroke="#526f31" stroke-width="3"/><path d="M674 466h70m-70 14h52m-52 14h61" stroke="#c5cfb6" stroke-width="4"/>
+<g fill="#718163" font-family="Arial,sans-serif" font-size="10" letter-spacing="2"><text x="144" y="549">FROM AN IDEA TO AN INTERACTION.</text></g>
+</svg>
