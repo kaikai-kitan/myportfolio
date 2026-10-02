@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>岩田 快道 | Portfolio</title>
+  <meta name="description" content="岩田快道のポートフォリオ。ソフトウェア開発、IoT、デジタルファブリケーション、映像制作の活動を紹介します。">
+  <meta property="og:title" content="岩田 快道 | Portfolio">
+  <meta property="og:description" content="ソフトウェアからハードウェアまで、領域を横断したモノづくりと活動の記録。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kaikai-kitan.github.io/myportfolio/">
+  <link rel="canonical" href="https://kaikai-kitan.github.io/myportfolio/">
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    img { max-width: 100%; }
+    .profile-card { display: flow-root; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    @media (max-width: 600px) {
+      nav.site-nav .nav-inner { flex-wrap: wrap; gap: 4px; }
+      nav.site-nav .nav-links { margin-left: 0; flex-wrap: wrap; gap: 0; }
+      nav.site-nav .nav-links a { padding: 6px; font-size: 0.8rem; }
+      .works-grid, .videos-grid { grid-template-columns: minmax(0, 1fr); }
+      .hero { padding: 20px; }
+      section[id], header[id] { scroll-margin-top: 120px; }
+      .contact-form { overflow-wrap: anywhere; }
+    }
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --bg-color: #f8f9fa;
+      --text-color: #333;
+    }
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1, h2, h3 {
+      color: var(--primary-color);
+    }
+    h2 {
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 5px;
+      margin-top: 50px;
+    }
+    /* account for sticky nav when scrolling to anchors */
+    section[id] { scroll-margin-top: 82px; }
+    a {
+      color: var(--secondary-color);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    /* Navbar */
+    nav.site-nav {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    nav.site-nav .nav-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    nav.site-nav .brand {
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    nav.site-nav .nav-links {
+      margin-left: auto;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    nav.site-nav .nav-links a {
+      color: var(--text-color);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.95em;
+    }
+    nav.site-nav .nav-links a:hover {
+      background: rgba(52,152,219,0.08);
+      color: var(--secondary-color);
+    }
+    /* Hero */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      align-items: center;
+      background: linear-gradient(180deg, rgba(52,152,219,0.06), rgba(255,99,71,0.03));
+      padding: 28px;
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    .hero .hero-content {
+      max-width: 720px;
+    }
+    .hero h2 {
+      margin: 0 0 6px 0;
+      font-size: 1.4rem;
+    }
+    .hero p.lead {
+      margin: 0 0 12px 0;
+      color: #444;
+    }
+    .tomato-illustration {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ff6b6b, #ff2d2d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(255,45,45,0.12);
+      margin-left: auto;
+    }
+
+    /* Skills icons grid */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .skill-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .skill-icon {
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border-radius: 8px;
+      background: #f1f3f5;
+    }
+    .skill-js { background: #f7df1e; color: #000; }
+    .skill-svelte { background: #ff3e00; color: #fff; }
+    .skill-py { background: linear-gradient(180deg,#306998,#ffd43b); color:#fff; }
+    .skill-ae { background: #1f1f2e; color:#fff; }
+    .skill-c { background: #2d6cdf; color:#fff; }
+    .skill-esp { background: #6bd3b3; color:#064; }
+
+    /* Videos */
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .video-card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .video-card iframe,
+    .video-card video {
+      width: 100%;
+      height: 180px;
+      display: block;
+      border: 0;
+    }
+
+    /* Videos caption style: make captions black and remove link underline */
+    #videos .video-card a {
+      color: #000;
+      text-decoration: none;
+      border-bottom: none;
+    }
+    #videos .video-card a:hover {
+      color: var(--secondary-color);
+      text-decoration: underline;
+    }
+
+    /* Activities & Events */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 720px) {
+      .two-col { grid-template-columns: 1fr; }
+      nav.site-nav .nav-inner { padding: 10px 12px; }
+      .tomato-illustration { width: 110px; height: 110px; }
+    }
+    /* Add spacing between skills and profile */
+    #skills { margin-bottom: 28px; }
+    
+    /* Profile Section */
+    .profile-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .links {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    /* Skills Section */
+    .skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      list-style: none;
+      padding: 0;
+    }
+    .skills-list li {
+      background: #e9ecef;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+
+    /* Timeline Section (Achievements) */
+    .timeline {
+      position: relative;
+      margin: 20px 0;
+      padding-left: 30px;
+      border-left: 3px solid var(--secondary-color);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 30px;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -38px;
+      top: 5px;
+      width: 13px;
+      height: 13px;
+      background: var(--bg-color);
+      border: 3px solid var(--secondary-color);
+      border-radius: 50%;
+    }
+    .timeline-date {
+      font-weight: bold;
+      color: var(--secondary-color);
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+    .timeline-content {
+      background: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .timeline-content h3 {
+      margin: 0 0 10px 0;
+      font-size: 1.1em;
+    }
+
+    /* Works Section */
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .work-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .work-title {
+      margin-top: 0;
+    }
+    .work-tech {
+      font-size: 0.85em;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal {
+      background: #fff;
+      border-radius: 10px;
+      max-width: 760px;
+      width: 94%;
+      max-height: 80vh;
+      overflow: auto;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .modal.show { display: block; }
+    .modal-close { float: right; background: transparent; border: 0; font-size: 1.1rem; cursor: pointer; }
+
+    /* Contact form */
+    .contact-form { background:#fff; padding:16px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.04); }
+    .contact-form input, .contact-form textarea { width:100%; padding:8px; margin-top:8px; border:1px solid #e6e6e6; border-radius:6px; }
+    .contact-form button { margin-top:8px; background:var(--secondary-color); color:#fff; border:0; padding:8px 12px; border-radius:6px; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <nav class="site-nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <div class="brand">Kaido Iwata</div>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#skills">Skills</a>
+        <a href="#achievements">Achievements</a>
+        <a href="#works">Works</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <!-- Hero (Tomato anecdote) -->
+    <section class="hero">
+      <div class="hero-content">
+        <h2>ちょっと変わった自己紹介 — トマト研究</h2>
+        <p class="lead">いつもトマト以外の食べ物が好きでトマトが嫌い。でもモスバーガーのトマトは食べられる謎を解くために、どの厚みのトマトから食べられないか自由研究を行ったら、8mmから食べられないことが判明しました。研究精神と遊び心を大切にしています。</p>
+        <p><a href="#contact">お問い合わせ / Contact</a></p>
+        <div style="margin-top:12px">
+          <a href="https://github.com/kaikai-kitan" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+      </div>
+      <div class="tomato-illustration" aria-hidden="true">🍅</div>
+    </section>
+    
+    <section id="skills">
+      <h2>Skills</h2>
+      <div class="skills-grid" style="align-items:center;">
+        <!-- Languages -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+          <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+          <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white" alt="C" />
+          <img src="https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=c-sharp&logoColor=white" alt="C#" />
+        </div>
+
+        <!-- Game & Creative Tools -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;">
+          <img src="https://img.shields.io/badge/Unity-000000?style=for-the-badge&logo=unity&logoColor=white" alt="Unity" />
+          <img src="https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white" alt="Arduino" />
+          <img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white" alt="Figma" />
+        </div>
+
+        <!-- Video & Motion -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;">
+          <img src="https://img.shields.io/badge/After_Effects-9999FF?style=for-the-badge&logo=adobe-after-effects&logoColor=white" alt="After Effects" />
+          <img src="https://img.shields.io/badge/Premiere_Pro-9999FF?style=for-the-badge&logo=adobe-premiere-pro&logoColor=white" alt="Premiere Pro" />
+        </div>
+
+        <!-- DevOps & Others -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px;">
+          <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+          <img src="https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare" />
+        </div>
+      </div>
+    </section>
+    <header id="home" class="profile-card">
+      <h1>岩田 快道 (Iwata Kaido)</h1>
+      <p>生年月日：2004年2月29日　|　出身地：滋賀県彦根市</p>
+      <p>京都産業大学大学院 先端情報学研究科 1年</p>
+      <p>ソフトウェア開発からハードウェア（デジタルファブリケーション・IoT）まで領域を横断したモノづくりに取り組んでいます。技術を用いて現実空間の課題を解決し、人々の生活に新しい価値を提供することに関心があります。</p>
+        <div class="links">
+          <a href="https://github.com/kaikai-kitan" target="_blank" rel="noopener noreferrer">GitHub</a> | 
+          <a href="#contact">Contact</a>
+        </div>
+    </header>
+    
+
+    <!-- 実績 (時系列順) -->
+    <section id="achievements">
+      <h2>Achievements</h2>
+      <div class="timeline">
+        
+        <div class="timeline-item">
+          <div class="timeline-date">2023年3月（学部1年）</div>
+          <div class="timeline-content">
+            <h3>大学広報誌 掲載</h3>
+            <a href="https://www.kyoto-su.ac.jp/about/koho/sagi/2023/08_01_sagi.html" target="_blank" rel="noopener noreferrer">記事リンク</a>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2023年9月（学部2年）</div>
+          <div class="timeline-content">
+            <h3>ゆるソン（ハッカソン等）での活動</h3>
+            <a href="https://www.kyoto-su.ac.jp/wr-news/2023_ise/20231120_196_yuruthon.html" target="_blank" rel="noopener noreferrer">記事リンク</a>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2023年12月（学部2年）</div>
+          <div class="timeline-content">
+            <h3>ソニーセミコンダクタ / センシング関連プロジェクト</h3>
+            <p>
+              <a href="https://www.sony-semicon.com/ja/info/2024/2024011201.html" target="_blank" rel="noopener noreferrer">企業掲載リンク</a> / 
+              <a href="https://www.kyoto-su.ac.jp/wr-news/2023_ise/20231226_196_sensing.html" target="_blank" rel="noopener noreferrer">大学記事リンク</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2024年7月（学部3年）</div>
+          <div class="timeline-content">
+            <h3>Tech Seeker での活動</h3>
+            <a href="https://www.kyoto-su.ac.jp/wr-news/2024_ise/20240716_196_techseeker.html" target="_blank" rel="noopener noreferrer">記事リンク</a>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2025年2月（学部3年）</div>
+          <div class="timeline-content">
+            <h3>大学公式ニュース掲載</h3>
+            <a href="https://www.kyoto-su.ac.jp/news/news-000598.html" target="_blank" rel="noopener noreferrer">記事リンク</a>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2025年6月（学部4年）</div>
+          <div class="timeline-content">
+            <h3>京都新聞 掲載</h3>
+            <a href="https://www.kyoto-np.co.jp/articles/-/1494513" target="_blank" rel="noopener noreferrer">記事リンク</a>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2026年7月（大学院1年）</div>
+          <div class="timeline-content">
+            <h3>大学公式ニュース掲載</h3>
+            <a href="https://www.kyoto-su.ac.jp/news/news-003319.html" target="_blank" rel="noopener noreferrer">記事リンク</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Videos / 映像作品 -->
+    <section id="videos">
+      <h2>Videos</h2>
+      <p>大学在籍中に制作した映像作品を紹介します。</p>
+      <div class="videos-grid">
+        <!-- 1 -->
+        <div class="video-card">
+          <div class="media-fallback" data-id="qpyAPRqM528">
+            <iframe src="https://www.youtube.com/embed/qpyAPRqM528?rel=0" title="Video 1" loading="lazy" allowfullscreen></iframe>
+          </div>
+          <div style="padding:10px"><a href="https://www.youtube.com/watch?v=qpyAPRqM528" target="_blank" rel="noopener noreferrer">部活のMusic班の先輩が作成した音楽のメドレー</a></div>
+        </div>
+
+        <!-- 2 -->
+        <div class="video-card">
+          <div class="media-fallback" data-id="vR4zYsvXco4">
+            <iframe src="https://www.youtube.com/embed/vR4zYsvXco4?rel=0" title="Video 2" loading="lazy" allowfullscreen></iframe>
+          </div>
+          <div style="padding:10px"><a href="https://www.youtube.com/watch?v=vR4zYsvXco4" target="_blank" rel="noopener noreferrer">部活の夏合宿3日間で作成した動画-思春期KN♡W</a></div>
+        </div>
+
+        <!-- 3 -->
+        <div class="video-card">
+          <div class="media-fallback" data-id="ZSowNJAmvLs">
+            <iframe src="https://www.youtube.com/embed/ZSowNJAmvLs?rel=0" title="Video 3" loading="lazy" allowfullscreen></iframe>
+          </div>
+          <div style="padding:10px"><a href="https://www.youtube.com/watch?v=ZSowNJAmvLs" target="_blank" rel="noopener noreferrer">部活動でV班を設立した際の活動内容紹介コンペティション</a></div>
+        </div>
+
+        <!-- 4 (studio video id) -->
+        <div class="video-card">
+          <div class="media-fallback" data-id="2HR0WA5hGog">
+            <iframe src="https://www.youtube.com/embed/2HR0WA5hGog?rel=0" title="Video 4" loading="lazy" allowfullscreen></iframe>
+          </div>
+          <div style="padding:10px"><a href="https://www.youtube.com/watch?v=2HR0WA5hGog" target="_blank" rel="noopener noreferrer">趣味練習-アスノヨゾラ哨戒班-</a></div>
+        </div>
+
+        <!-- 5 -->
+        <div class="video-card">
+          <div class="media-fallback" data-id="8yglG_UARAo">
+            <iframe src="https://www.youtube.com/embed/8yglG_UARAo?rel=0" title="Video 5" loading="lazy" allowfullscreen></iframe>
+          </div>
+          <div style="padding:10px"><a href="https://www.youtube.com/watch?v=8yglG_UARAo" target="_blank" rel="noopener noreferrer">漫画部コラボ作品-リンクーブルー-</a></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Activities: 部活動・資格・アルバイト -->
+    <section id="activities">
+      <h2>Activities & Experience</h2>
+      <div class="two-col">
+        <div>
+            <h3>所属・部活動</h3>
+            <ul>
+              <li>電子計算機応用部（大学1年〜大学4年）</li>
+              <li>むすびねこ（大学院1年〜現在）</li>
+            </ul>
+            <h3>資格</h3>
+            <ul>
+              <li>普通自動車免許</li>
+              <li>FP3級</li>
+              <li>食品衛生責任者</li>
+            </ul>
+        </div>
+        <div>
+          <h3>アルバイト</h3>
+            <ul>
+              <li>コンビニエンスストアスタッフ（ローソン、在籍：高校1年〜大学1年）</li>
+              <li>学習塾講師アシスタント（大学1年）</li>
+              <li>計算機運用補助員（大学2年〜現在）</li>
+              <li>製造ライン作業員（工場バイト、大学2年夏）</li>
+              <li>ファブラボ イベントスタッフ（大学3年夏、大学4年夏）</li>
+              <li>授業補助員（大学3年〜現在）</li>
+            </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 制作物 -->
+    <section id="works">
+      <h2>Works</h2>
+      <div class="works-grid">
+        
+        <div class="work-card">
+          <h3 class="work-title">yarikuri</h3>
+          <p>ソースコードとプロジェクトの詳細をGitHubで紹介しています。</p>
+          <a href="https://github.com/kaikai-kitan/yarikuri" target="_blank" rel="noopener noreferrer">GitHubで見る</a>
+        </div>
+
+        <div class="work-card">
+          <h3 class="work-title">Electromagnetic-Informatics</h3>
+          <p>ソースコードとプロジェクトの詳細をGitHubで紹介しています。</p>
+          <a href="https://github.com/kaikai-kitan/Electromagnetic-Informatics" target="_blank" rel="noopener noreferrer">GitHubで見る</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 連絡先 -->
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>ご連絡は以下の方法でお願いします：</p>
+      <div class="contact-form">
+        <p><strong>Mail :</strong> <a href="mailto:i2686019@cc.kyoto-su.ac.jp">i2686019@cc.kyoto-su.ac.jp</a></p>
+        <p><strong>Tel :</strong> 070-1777-0229（繋がらない可能性があります）</p>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
