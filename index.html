@@ -98,6 +98,64 @@
       background: rgba(52,152,219,0.08);
       color: var(--secondary-color);
     }
+    /* About-me room chatbot */
+    .room-chat {
+      margin: 20px 0 34px;
+      overflow: hidden;
+      border-radius: 22px;
+      background: #fffaf0;
+      box-shadow: 0 14px 38px rgba(68, 52, 37, .12);
+      border: 1px solid rgba(104, 78, 54, .1);
+    }
+    .room-heading { padding: 25px 30px 14px; }
+    .room-kicker { margin: 0 0 5px; color: #a66c45; font-size: .76rem; font-weight: 800; letter-spacing: .12em; }
+    .room-heading h1 { margin: 0; color: #493b33; font-size: clamp(1.35rem, 3vw, 1.85rem); }
+    .room-heading p:last-child { margin: 5px 0 0; color: #75665b; font-size: .94rem; }
+    .room-scene {
+      position: relative;
+      height: clamp(260px, 39vw, 410px);
+      overflow: hidden;
+      background: #e9c9a5;
+    }
+    .room-scene svg { display: block; width: 100%; height: 100%; }
+    .scene-bubble {
+      position: absolute;
+      top: 9%; left: 48%;
+      max-width: min(40%, 360px);
+      padding: 13px 17px;
+      border-radius: 18px 18px 18px 5px;
+      color: #53483d;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 5px 18px rgba(68,52,37,.13);
+      font-size: .92rem;
+      line-height: 1.55;
+      animation: bubble-in .35s ease-out both;
+    }
+    .scene-bubble::after { content: ''; position: absolute; left: 14px; bottom: -8px; border: 9px solid transparent; border-top-color: #fff; border-left: 0; }
+    .scene-bubble.thinking { color: #8b7a6b; }
+    @keyframes bubble-in { from { opacity: 0; transform: translateY(7px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .room-chatbox { padding: 18px 24px 22px; background: #fffdf8; }
+    .chat-log { display: flex; flex-direction: column; gap: 10px; max-height: 180px; overflow-y: auto; margin-bottom: 13px; }
+    .chat-message { max-width: 82%; padding: 9px 13px; border-radius: 15px; font-size: .9rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .chat-message.bot { align-self: flex-start; background: #f2e8dc; color: #51453b; border-bottom-left-radius: 4px; }
+    .chat-message.user { align-self: flex-end; background: #536e63; color: white; border-bottom-right-radius: 4px; }
+    .chat-form { display: flex; gap: 9px; }
+    .chat-form input { min-width: 0; flex: 1; border: 1px solid #ddcdbb; border-radius: 12px; padding: 12px 14px; color: #493b33; background: white; font: inherit; }
+    .chat-form input:focus { outline: 3px solid rgba(83,110,99,.18); border-color: #536e63; }
+    .chat-form button { border: 0; border-radius: 12px; padding: 0 20px; color: white; background: #536e63; font: inherit; font-weight: 700; cursor: pointer; }
+    .chat-form button:hover { background: #40594f; }
+    .chat-form button:disabled { opacity: .65; cursor: wait; }
+    .chat-hints { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .chat-hints button { border: 1px solid #ddcdbb; border-radius: 999px; padding: 6px 11px; color: #66574a; background: transparent; font: inherit; font-size: .78rem; cursor: pointer; }
+    .chat-hints button:hover { background: #f4ede4; }
+    .chat-note { margin: 11px 0 0; color: #938579; font-size: .72rem; }
+    @media (max-width: 600px) {
+      .room-heading { padding: 20px 18px 12px; }
+      .room-scene { height: 280px; }
+      .scene-bubble { top: 7%; left: 42%; max-width: 50%; padding: 10px 12px; font-size: .8rem; }
+      .room-chatbox { padding: 14px; }
+      .chat-form button { padding: 0 14px; }
+    }
     /* Hero */
     .hero {
       display: grid;
@@ -341,17 +399,70 @@
     </div>
   </nav>
   <div class="container">
-    <!-- Hero (Tomato anecdote) -->
-    <section class="hero">
-      <div class="hero-content">
-        <h2>ちょっと変わった自己紹介 — トマト研究</h2>
-        <p class="lead">いつもトマト以外の食べ物が好きでトマトが嫌い。でもモスバーガーのトマトは食べられる謎を解くために、どの厚みのトマトから食べられないか自由研究を行ったら、8mmから食べられないことが判明しました。研究精神と遊び心を大切にしています。</p>
-        <p><a href="#contact">お問い合わせ / Contact</a></p>
-        <div style="margin-top:12px">
-          <a href="https://github.com/kaikai-kitan" target="_blank" rel="noopener noreferrer">GitHub</a>
-        </div>
+    <!-- About-me chatbot -->
+    <section id="home" class="room-chat" aria-labelledby="room-title">
+      <div class="room-heading">
+        <p class="room-kicker">WELCOME TO MY ROOM</p>
+        <h1 id="room-title">ぼくのこと、なんでも聞いてください。</h1>
+        <p>この部屋にいるアバターが、プロフィールや活動についてお答えします。</p>
       </div>
-      <div class="tomato-illustration" aria-hidden="true">🍅</div>
+      <div class="room-scene" aria-label="窓や本棚、机のある暖かな部屋にアバターが座っています">
+        <svg viewBox="0 0 1100 430" role="img" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#f4dfc5"/><stop offset="1" stop-color="#e8c7a2"/></linearGradient>
+            <linearGradient id="floor" x2="0" y2="1"><stop stop-color="#c28e62"/><stop offset="1" stop-color="#a87550"/></linearGradient>
+            <linearGradient id="window" x2="1" y2="1"><stop stop-color="#b7d8d0"/><stop offset="1" stop-color="#e9d9a8"/></linearGradient>
+          </defs>
+          <rect width="1100" height="342" fill="url(#wall)"/><rect y="342" width="1100" height="88" fill="url(#floor)"/>
+          <path d="M0 342H1100" stroke="#9a6d4d" stroke-width="8"/>
+          <!-- window and sunlight -->
+          <rect x="62" y="48" width="248" height="204" rx="7" fill="#fff5e6" stroke="#a97654" stroke-width="12"/>
+          <rect x="76" y="62" width="220" height="176" fill="url(#window)"/>
+          <path d="M186 62v176M76 150h220" stroke="#fff5e6" stroke-width="9"/>
+          <circle cx="245" cy="102" r="25" fill="#f4c978" opacity=".9"/><path d="M77 201q48-54 94-4t125-11v52H77z" fill="#8aa995" opacity=".8"/>
+          <!-- framed art -->
+          <rect x="377" y="59" width="132" height="106" rx="4" fill="#fff6e8" stroke="#ad7c59" stroke-width="8"/><rect x="390" y="72" width="106" height="80" fill="#c9ddd1"/><path d="M390 137l38-37 25 24 20-18 23 25v21H390z" fill="#829d82"/><circle cx="463" cy="91" r="10" fill="#edbe73"/>
+          <!-- bookcase -->
+          <rect x="831" y="59" width="218" height="284" rx="5" fill="#8c6045"/><rect x="846" y="73" width="188" height="252" fill="#d8b28c"/>
+          <path d="M846 157h188M846 241h188" stroke="#8c6045" stroke-width="8"/>
+          <rect x="859" y="94" width="24" height="59" rx="3" fill="#738879"/><rect x="887" y="105" width="27" height="48" rx="3" fill="#d18b62"/><rect x="918" y="88" width="20" height="65" rx="3" fill="#d6c06f"/><rect x="944" y="101" width="34" height="52" rx="3" fill="#718999"/><rect x="985" y="92" width="34" height="61" rx="3" fill="#aa7460"/>
+          <rect x="861" y="174" width="41" height="63" rx="4" fill="#d4bd87"/><rect x="907" y="183" width="29" height="54" rx="3" fill="#a07155"/><rect x="942" y="169" width="34" height="68" rx="3" fill="#768d79"/><rect x="982" y="178" width="38" height="59" rx="3" fill="#7892a0"/>
+          <rect x="858" y="258" width="30" height="62" rx="3" fill="#a07155"/><rect x="894" y="268" width="38" height="52" rx="3" fill="#778c74"/><rect x="938" y="253" width="27" height="67" rx="3" fill="#d49a69"/><rect x="971" y="264" width="48" height="56" rx="3" fill="#d2be8b"/>
+          <!-- rug -->
+          <ellipse cx="560" cy="376" rx="295" ry="42" fill="#d6a783" opacity=".75"/>
+          <ellipse cx="560" cy="376" rx="248" ry="27" fill="none" stroke="#edcfad" stroke-width="3" opacity=".7"/>
+          <!-- desk -->
+          <path d="M104 278h400v22H104z" fill="#946648"/><path d="M130 299h20v92h-20zm326 0h20v92h-20z" fill="#7c563e"/>
+          <rect x="147" y="248" width="67" height="29" rx="3" fill="#607a72"/><rect x="162" y="256" width="37" height="4" fill="#e8dfcc"/><rect x="162" y="264" width="29" height="3" fill="#e8dfcc"/>
+          <path d="M280 275q18-42 38 0z" fill="#db9d68"/><path d="M291 269v-19m14 20v-28m-8 27q-18-20-22-6m26 3q17-22 21-8" stroke="#73896e" stroke-width="6" fill="none" stroke-linecap="round"/>
+          <!-- avatar chair -->
+          <path d="M608 288q0-68 76-68t76 68v73H608z" fill="#6e7f70"/><path d="M632 352v43m104-43v43" stroke="#59483b" stroke-width="12" stroke-linecap="round"/>
+          <!-- abstract avatar body, hair and face -->
+          <path d="M632 361q8-101 53-101t53 101z" fill="#536e63"/><path d="M650 310q35-38 70 0v38h-70z" fill="#f3cfa9"/>
+          <ellipse cx="685" cy="228" rx="49" ry="57" fill="#e9b990"/><path d="M637 231q-8-69 47-69 53 1 51 68l-14-14-8-26q-31 27-68 21l-4 21z" fill="#493d38"/>
+          <path d="M660 231h7m36 0h7" stroke="#493d38" stroke-width="5" stroke-linecap="round"/><path d="M674 251q11 10 22 0" fill="none" stroke="#b87465" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="668" cy="239" r="3" fill="#493d38"/><circle cx="704" cy="239" r="3" fill="#493d38"/>
+          <rect x="645" y="397" width="80" height="25" rx="12.5" fill="#fff8eb" stroke="#a77a58" stroke-width="2"/><text x="685" y="414" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="15" fill="#493d38">kAIdo</text>
+          <!-- little mug -->
+          <rect x="753" y="319" width="37" height="31" rx="5" fill="#f2e6d4"/><path d="M790 326h8q8 13-8 16" fill="none" stroke="#f2e6d4" stroke-width="5"/>
+        </svg>
+        <div class="scene-bubble" id="scene-bubble" aria-live="polite">こんにちは、kAIdoです！プロフィールや制作、好きなことについて気軽に聞いてね。</div>
+      </div>
+      <div class="room-chatbox">
+        <div class="chat-log" id="chat-log" role="log" aria-live="polite" aria-label="会話">
+          <div class="chat-message bot">たとえば「どんな研究をしているの？」「トマトは好き？」と聞いてみてください。</div>
+        </div>
+        <form class="chat-form" id="chat-form">
+          <input id="chat-input" type="text" maxlength="300" autocomplete="off" placeholder="聞いてみたいことを入力..." aria-label="質問を入力" required>
+          <button type="submit">聞いてみる</button>
+        </form>
+        <div class="chat-hints" aria-label="質問例">
+          <button type="button" data-question="どんな研究をしているの？">研究について</button>
+          <button type="button" data-question="どんなものを作ってきた？">制作について</button>
+          <button type="button" data-question="トマトは好き？">トマトの話</button>
+        </div>
+        <p class="chat-note">回答はこのページに登録されたプロフィール情報をもとにしています。</p>
+      </div>
     </section>
     
     <section id="skills">
@@ -385,7 +496,7 @@
         </div>
       </div>
     </section>
-    <header id="home" class="profile-card">
+    <header id="profile" class="profile-card">
       <h1>岩田 快道 (Iwata Kaido)</h1>
       <p>生年月日：2004年2月29日　|　出身地：滋賀県彦根市</p>
       <p>京都産業大学大学院 先端情報学研究科 1年</p>
@@ -574,5 +685,81 @@
     </section>
 
   </div>
+<script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Local profile knowledge and conversational phrasing for kAIdo.
+  const profileAnswers = [
+    { topic: 'personality', terms: ['性格', 'どんな人', '人柄', '強み', '得意', '大切', '価値観', '好奇心', '遊び心', '研究精神', '好きなこと', '楽しい'], answer: '気になったことを実際に試して確かめるのが好きです。ソフトもハードも、面白そうならまず手を動かしてみるタイプ。トマトの厚みを調べたのもその一例です（笑）。' },
+    { topic: 'research', terms: ['研究', '専攻', '大学院', '学業', '何を学', '興味', '関心', 'ものづくり', '課題解決', '現実空間', '暮らし', '何してる', '何をしてる', '何やってる', '普段', 'やってる', '取り組み'], answer: 'ソフトウェアからハードウェアまで領域を横断したものづくりに取り組んでいます。技術で現実空間の課題を解決して、暮らしに新しい価値をつくることに関心があります。分野をまたいで考えるのが面白いんです。' },
+    { topic: 'works', terms: ['制作', '作った', '作っ', '作品', 'ポートフォリオ', 'アプリ', 'svelte', 'iot', 'esp32', 'プロジェクト', 'ものを作', '何を作', '開発'], answer: 'Webアプリケーションや、ESP32と3Dパーツを使ったIoTデバイスなどを制作してきました。ソフトだけで完結せず、実際に触れるものまで作るのが好きです。詳しくはWorks欄も見てみてください！' },
+    { topic: 'tomato', terms: ['トマト', '好き嫌い', '嫌いな', '苦手な食', 'モスバーガー', '8mm', '八ミリ'], answer: '実はトマトが苦手です。でもモスバーガーのトマトは食べられるので、「何mmから無理なんだろう？」と厚みを変えて調べました。結果は8mmから食べられない！こういう身近な疑問を試すの、けっこう好きです（笑）。' },
+    { topic: 'hometown', terms: ['出身', 'どこ', '地元', '滋賀', '彦根', '生まれ'], answer: '滋賀県彦根市出身です！' },
+    { topic: 'birthday', terms: ['誕生日', '生年月日', '何歳', 'いつ生まれ', 'うるう年'], answer: '2004年2月29日生まれです。うるう年生まれなので、誕生日の話になるとちょっと覚えてもらいやすいです。' },
+    { topic: 'school', terms: ['大学', '学校', '京都産業', '先端情報', '何年生', '学部', 'どこで学'], answer: '京都産業大学大学院の先端情報学研究科に在籍しています。' },
+    { topic: 'skills', terms: ['スキル', '言語', '技術', 'プログラミング', 'できる', '何ができ', '使える', 'javascript', 'python', 'unity', 'arduino', 'figma'], answer: 'JavaScript、Python、C、C#をはじめ、Unity、Arduino、Figma、After Effects、Premiere Proなどに触れてきました。ソフトウェアもハードウェアも、必要に応じて手を動かして覚えていくスタイルです。' },
+    { topic: 'activities', terms: ['活動', '部活', 'サークル', 'むすびねこ', '電子計算機', '所属', '学生時代'], answer: '大学では電子計算機応用部で活動し、大学院では「むすびねこ」に所属しています。部活動やものづくりの場で、仲間と一緒に形にしていく経験を重ねてきました。' },
+    { topic: 'work', terms: ['仕事', 'バイト', 'アルバイト', '経験', '働いた', 'ファブラボ'], answer: 'コンビニや塾でのアルバイトのほか、大学での計算機運用補助・授業補助、ファブラボのイベントスタッフなどを経験しました。いろいろな現場を知れたのが面白かったです。' },
+    { topic: 'videos', terms: ['映像', '動画', '音楽', '趣味', '作品集'], answer: '大学在籍中に映像作品を制作してきました。動画作品はページ下のVideos欄から見られます！趣味の詳しい話は、まだこのプロフィールにはあまり書けていないので、追加されたら教えるね。' },
+    { topic: 'contact', terms: ['連絡', '連絡先', 'メール', '問い合わせ', 'コンタクト', '連絡する'], answer: '連絡先はページ下のContact欄に載せています。メールから気軽にご連絡ください！' },
+    { topic: 'greeting', terms: ['こんにちは', 'はじめまして', 'やあ', '元気', '何してるの'], answer: 'こんにちは！こうして話しかけてもらえてうれしいです。ものづくりのことでも、ちょっとした自己紹介でも、気軽に聞いてください。' }
+  ];
+  const chatForm = document.getElementById('chat-form');
+  const chatInput = document.getElementById('chat-input');
+  const chatLog = document.getElementById('chat-log');
+  const sceneBubble = document.getElementById('scene-bubble');
+  const submitButton = chatForm.querySelector('button[type="submit"]');
+
+  let lastAnswer = '';
+  function findProfileAnswer(question) {
+    const normalized = question.toLowerCase().replace(/[\s　?？。、!！]/g, '');
+    if (lastAnswer && ['それは', 'それって', '詳しく', 'もっと', '他には', 'ほかには', 'なんで', 'どうして'].some(phrase => normalized.includes(phrase))) {
+      return `${lastAnswer} 気になるところがあれば、もう少し聞いてね。`;
+    }
+    let best = null;
+    let bestScore = 0;
+    profileAnswers.forEach(entry => {
+      const score = entry.terms.reduce((sum, term) => sum + (normalized.includes(term.toLowerCase()) ? Math.max(2, term.length * (term.length > 3 ? 1.5 : 1)) : 0), 0);
+      if (score > bestScore) { best = entry; bestScore = score; }
+    });
+    if (!bestScore) return 'それはひみつ！まだプロフィールに書いていないことみたい。ぼくの性格やものづくりについてなら、いろいろ話せるよ。';
+    lastAnswer = best.answer;
+    return best.answer;
+  }
+
+  function addChatMessage(text, role) {
+    const message = document.createElement('div');
+    message.className = `chat-message ${role}`;
+    message.textContent = text;
+    chatLog.appendChild(message);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+
+  async function askQuestion(question) {
+    const cleanQuestion = question.trim();
+    if (!cleanQuestion || submitButton.disabled) return;
+    addChatMessage(cleanQuestion, 'user');
+    chatInput.value = '';
+    submitButton.disabled = true;
+    sceneBubble.classList.add('thinking');
+    sceneBubble.textContent = 'うーん、プロフィールを確認中...';
+    await new Promise(resolve => setTimeout(resolve, 450));
+    const answer = findProfileAnswer(cleanQuestion);
+    addChatMessage(answer, 'bot');
+    sceneBubble.classList.remove('thinking');
+    sceneBubble.textContent = answer;
+    submitButton.disabled = false;
+    chatInput.focus();
+  }
+
+  chatForm.addEventListener('submit', event => {
+    event.preventDefault();
+    askQuestion(chatInput.value);
+  });
+  document.querySelectorAll('.chat-hints [data-question]').forEach(button => {
+    button.addEventListener('click', () => askQuestion(button.dataset.question));
+  });
+
+});
+</script>
 </body>
 </html>
